@@ -1,24 +1,26 @@
 package com.munir.curso_spring.services;
 
-import static com.munir.curso_spring.utils.ObjectMapper.parseListObjects;
-import static com.munir.curso_spring.utils.ObjectMapper.parseObject;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.stereotype.Service;
 
 import com.munir.curso_spring.controllers.PessoaController;
 import com.munir.curso_spring.entidades.Pessoa;
 import com.munir.curso_spring.entidades.DTO.PessoaDTO;
+import com.munir.curso_spring.mapper.PessoaMapper;
 import com.munir.curso_spring.repositories.PessoaRepository;
 
 @Service
 public class PessoaService {
+	
+	@Autowired
+	PessoaMapper mapper;
 	
 	@Autowired
 	PessoaRepository repository;
@@ -29,7 +31,7 @@ public class PessoaService {
 		
 		if(pessoa.isPresent()) {
 			
-			PessoaDTO pessoaDTO = parseObject(pessoa.get(), PessoaDTO.class);
+			PessoaDTO pessoaDTO = mapper.toDTO(pessoa.get());
 			addHATEOASLinks(idPessoa, pessoaDTO);
 			
 			return pessoaDTO;
@@ -47,7 +49,7 @@ public class PessoaService {
 			
 			listaPessoas = repository.findAll();
 			
-			listaPessoasDTO = parseListObjects(listaPessoas, PessoaDTO.class);
+			listaPessoasDTO = mapper.toDTOList(listaPessoas);
 			
 		} else {
 			
@@ -61,10 +63,10 @@ public class PessoaService {
 
 	public PessoaDTO save(PessoaDTO pessoaDTO) {
 		
-		Pessoa pessoa = parseObject(pessoaDTO, Pessoa.class);
+		Pessoa pessoa = mapper.toEntity(pessoaDTO);
 		pessoa = repository.save(pessoa);
 		
-		pessoaDTO = parseObject(pessoa, PessoaDTO.class);
+		pessoaDTO = mapper.toDTO(pessoa);
 		addHATEOASLinks(pessoaDTO.getId(), pessoaDTO);
 		
 		return pessoaDTO;
@@ -72,11 +74,11 @@ public class PessoaService {
 	
 	public PessoaDTO alteraPessoa(Long idPessoa, PessoaDTO pessoaDTO) {
 		
-		Pessoa pessoa = parseObject(pessoaDTO, Pessoa.class);
+		Pessoa pessoa = mapper.toEntity(pessoaDTO);
 		pessoa.setId(idPessoa);
 		pessoa = repository.save(pessoa);
 		
-		pessoaDTO = parseObject(pessoa, PessoaDTO.class);
+		pessoaDTO = mapper.toDTO(pessoa);
 		addHATEOASLinks(pessoaDTO.getId(), pessoaDTO);
 		
 		return pessoaDTO;

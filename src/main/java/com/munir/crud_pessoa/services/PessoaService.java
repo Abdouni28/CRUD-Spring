@@ -1,4 +1,4 @@
-package com.munir.curso_spring.services;
+package com.munir.crud_pessoa.services;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -10,11 +10,11 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.munir.curso_spring.controllers.PessoaController;
-import com.munir.curso_spring.entidades.Pessoa;
-import com.munir.curso_spring.entidades.DTO.PessoaDTO;
-import com.munir.curso_spring.mapper.PessoaMapper;
-import com.munir.curso_spring.repositories.PessoaRepository;
+import com.munir.crud_pessoa.controllers.PessoaController;
+import com.munir.crud_pessoa.entidades.Pessoa;
+import com.munir.crud_pessoa.entidades.DTO.PessoaDTO;
+import com.munir.crud_pessoa.mapper.PessoaMapper;
+import com.munir.crud_pessoa.repositories.PessoaRepository;
 
 @Service
 public class PessoaService {

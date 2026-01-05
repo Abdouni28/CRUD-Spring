@@ -15,8 +15,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.munir.curso_spring.entidades.Pessoa;
-import com.munir.curso_spring.repositories.PessoaRepository;
+import com.munir.crud_pessoa.entidades.Pessoa;
+import com.munir.crud_pessoa.repositories.PessoaRepository;
+import com.munir.crud_pessoa.services.PessoaService;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith(MockitoExtension.class)

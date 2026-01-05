@@ -18,4 +18,7 @@
  * public static String getMessage(String key) {
  * 
  * return env.getProperty(key); } }
+ * 
+ * package com;
+ * 
  */

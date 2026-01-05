@@ -1,6 +1,7 @@
-package com.munir.curso_spring.entidades.DTO;
+package com.munir.crud_pessoa.entidades.DTO;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 import org.springframework.hateoas.RepresentationModel;
 
@@ -25,5 +26,17 @@ public class PessoaDTO extends RepresentationModel<PessoaDTO> implements Seriali
 	
 	@Getter
 	@Setter
-	private String endereco;
+	private String cpf;
+	
+	@Getter
+	@Setter
+	private String email;
+	
+	@Getter
+	@Setter
+	private LocalDate dataNascimento;
+	
+	@Getter
+	@Setter
+	private String flagAtivo;
 }

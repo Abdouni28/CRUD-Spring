@@ -1,4 +1,4 @@
-package com.munir.curso_spring.controllers;
+package com.munir.crud_pessoa.controllers;
 
 import java.util.List;
 
@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.munir.curso_spring.entidades.DTO.PessoaDTO;
-import com.munir.curso_spring.services.PessoaService;
+import com.munir.crud_pessoa.entidades.DTO.PessoaDTO;
+import com.munir.crud_pessoa.services.PessoaService;
 
 @RestController
 @RequestMapping("/pessoa")

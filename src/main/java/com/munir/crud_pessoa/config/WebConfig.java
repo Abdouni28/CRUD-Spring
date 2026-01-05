@@ -1,4 +1,4 @@
-package com.munir.curso_spring.config;
+package com.munir.crud_pessoa.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;

@@ -1,4 +1,4 @@
-package com.munir.curso_spring.mapper;
+package com.munir.crud_pessoa.mapper;
 
 import java.util.List;
 

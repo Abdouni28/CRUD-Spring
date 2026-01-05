@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.munir</groupId>
-	<artifactId>curso-spring</artifactId>
+	<artifactId>crud-pessoa</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>curso-spring</name>
-	<description>Projeto do curso de spring da Udemy</description>
+	<name>crud-pessoa</name>
+	<description>V2 do teste de pleno da LIAX</description>
 	<url/>
 	<licenses>
 		<license/>

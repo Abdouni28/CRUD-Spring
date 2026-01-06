@@ -2,11 +2,11 @@ package com.munir.crud_pessoa.mapper;
 
 import java.util.List;
 
-public interface BaseMapper<E, D> {
+public interface BaseMapper<entidade, requestDTO, responseDTO> {
 
-	D toDTO(E entity);
-	E toEntity(D dto);
+	responseDTO toResponseDTO(entidade entity);
+	entidade toEntity(requestDTO dto);
 	
-	List<D> toDTOList(List<E> entityList);
-	List<E> toEntityList(List<D> dtoList);
+	List<responseDTO> toDTOList(List<entidade> entityList);
+	List<entidade> toEntityList(List<requestDTO> dtoList);
 }

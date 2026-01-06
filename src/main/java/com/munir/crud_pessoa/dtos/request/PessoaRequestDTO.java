@@ -1,4 +1,4 @@
-package com.munir.crud_pessoa.entidades.DTO;
+package com.munir.crud_pessoa.dtos.request;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -12,7 +12,7 @@ import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class PessoaDTO extends RepresentationModel<PessoaDTO> implements Serializable {
+public class PessoaRequestDTO extends RepresentationModel<PessoaRequestDTO> implements Serializable {
 
 	private static final long serialVersionUID = -1699673320879885526L;
 

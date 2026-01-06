@@ -7,6 +7,6 @@ public interface BaseMapper<entidade, requestDTO, responseDTO> {
 	responseDTO toResponseDTO(entidade entity);
 	entidade toEntity(requestDTO dto);
 	
-	List<responseDTO> toDTOList(List<entidade> entityList);
+	List<responseDTO> toResponseDTOList(List<entidade> entityList);
 	List<entidade> toEntityList(List<requestDTO> dtoList);
 }

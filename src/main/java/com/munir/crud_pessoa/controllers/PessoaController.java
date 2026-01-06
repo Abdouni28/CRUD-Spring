@@ -1,14 +1,18 @@
 package com.munir.crud_pessoa.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.munir.crud_pessoa.dtos.request.PessoaRequestDTO;
 import com.munir.crud_pessoa.dtos.response.PessoaResponseDTO;
 import com.munir.crud_pessoa.services.PessoaService;
 
@@ -36,17 +40,19 @@ public class PessoaController {
 		return ResponseEntity.status(HttpStatus.OK).body(pessoa);
 	}
 	
+	
+	@GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE,
+							MediaType.APPLICATION_XML_VALUE,
+							MediaType.APPLICATION_YAML_VALUE },
+				consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<PessoaResponseDTO>> find(@RequestBody(required = false) PessoaRequestDTO pessoaDTO) {
+
+		List<PessoaResponseDTO> listaPessoas = pessoaService.find(pessoaDTO);
+
+		return ResponseEntity.status(HttpStatus.OK).body(listaPessoas);
+	}
+	  
 	/*
-	 * @GetMapping(path = "/buscar-pessoa", produces =
-	 * {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE,
-	 * MediaType.APPLICATION_YAML_VALUE}, consumes =
-	 * MediaType.APPLICATION_JSON_VALUE) public ResponseEntity<List<PessoaDTO>>
-	 * find(@RequestBody(required = false) PessoaDTO pessoaDTO) {
-	 * 
-	 * List<PessoaDTO> listaPessoas = pessoaService.find(pessoaDTO);
-	 * 
-	 * return ResponseEntity.status(HttpStatus.OK).body(listaPessoas); }
-	 * 
 	 * @PostMapping(path = "/add", produces = {MediaType.APPLICATION_JSON_VALUE,
 	 * MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE}, consumes
 	 * = MediaType.APPLICATION_JSON_VALUE) public ResponseEntity<PessoaDTO>
@@ -83,4 +89,5 @@ public class PessoaController {
 	 * ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessagesLoader.getMessage(
 	 * "message.pessoa_nao_encontrada")); }
 	 */
+	 
 }

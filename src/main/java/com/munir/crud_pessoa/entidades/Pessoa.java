@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
-import com.munir.crud_pessoa.enums.SimNaoEnum;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -45,8 +43,8 @@ public class Pessoa implements Serializable {
 	@Column(name = "data_nascimento")
 	private LocalDate dataNascimento;
 	
-	@Column(name = "fl_ativo")
-	private String flagAtivo;
+	@Column(name = "ativa")
+	private Boolean ativa;
 	
 	/*
 	 * @OneToMany(mappedBy = "pessoa", fetch = FetchType.EAGER) private
@@ -55,15 +53,10 @@ public class Pessoa implements Serializable {
 	 * @OneToMany(mappedBy = "pessoa", fetch = FetchType.EAGER) private
 	 * List<Telefone> telefones = new ArrayList<>();
 	 */
-	
-	public Boolean isAtivo() {
-		
-		return this.flagAtivo.equalsIgnoreCase(SimNaoEnum.SIM.getFlag());
-	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(cpf, dataNascimento, email, flagAtivo, id, nome);
+		return Objects.hash(cpf, dataNascimento, email, ativa, id, nome);
 	}
 
 	@Override
@@ -76,7 +69,7 @@ public class Pessoa implements Serializable {
 			return false;
 		Pessoa other = (Pessoa) obj;
 		return Objects.equals(cpf, other.cpf) && Objects.equals(dataNascimento, other.dataNascimento)
-				&& Objects.equals(email, other.email) && Objects.equals(flagAtivo, other.flagAtivo)
+				&& Objects.equals(email, other.email) && Objects.equals(ativa, other.ativa)
 				&& Objects.equals(id, other.id) && Objects.equals(nome, other.nome);
 	}
 }

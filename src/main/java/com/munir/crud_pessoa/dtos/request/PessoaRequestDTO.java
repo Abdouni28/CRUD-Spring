@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record PessoaRequestDTO(Long id, String nome, String cpf, String email,
 							   @JsonProperty("data_nascimento") LocalDate dataNascimento,
-							   @JsonProperty("flag_ativo")String flagAtivo) implements Serializable {
+							   @JsonProperty("ativa") Boolean ativa) implements Serializable {
 
 	private static final long serialVersionUID = -1699673320879885526L;
 }

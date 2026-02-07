@@ -6,8 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,9 +27,9 @@ public class PessoaController {
 	PessoaService pessoaService;
 	
 	@GetMapping(path = "/{id}",
-				produces = {MediaType.APPLICATION_JSON_VALUE,
+				produces = { MediaType.APPLICATION_JSON_VALUE,
 							MediaType.APPLICATION_XML_VALUE,
-							MediaType.APPLICATION_YAML_VALUE})
+							MediaType.APPLICATION_YAML_VALUE })
 	public ResponseEntity<?> findById(@PathVariable("id") Long idPessoa) {
 		
 		PessoaResponseDTO pessoa = pessoaService.findById(idPessoa);
@@ -41,7 +44,7 @@ public class PessoaController {
 	}
 	
 	
-	@GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE,
+	@GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE,
 							MediaType.APPLICATION_XML_VALUE,
 							MediaType.APPLICATION_YAML_VALUE },
 				consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -52,42 +55,43 @@ public class PessoaController {
 		return ResponseEntity.status(HttpStatus.OK).body(listaPessoas);
 	}
 	  
-	/*
-	 * @PostMapping(path = "/add", produces = {MediaType.APPLICATION_JSON_VALUE,
-	 * MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE}, consumes
-	 * = MediaType.APPLICATION_JSON_VALUE) public ResponseEntity<PessoaDTO>
-	 * save(@RequestBody PessoaDTO pessoaDTO) {
-	 * 
-	 * pessoaDTO = pessoaService.save(pessoaDTO);
-	 * 
-	 * return ResponseEntity.status(HttpStatus.CREATED).body(pessoaDTO); }
-	 * 
-	 * @PutMapping(path = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE,
-	 * MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE}, consumes
-	 * = MediaType.APPLICATION_JSON_VALUE) public ResponseEntity<PessoaDTO>
-	 * alteraPessoa(@PathVariable("id") Long idPessoa, @RequestBody PessoaDTO
-	 * pessoaDTO) {
-	 * 
-	 * pessoaDTO = pessoaService.alteraPessoa(idPessoa, pessoaDTO);
-	 * 
-	 * return ResponseEntity.status(HttpStatus.OK).body(pessoaDTO); }
-	 * 
-	 * @DeleteMapping(path = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE,
-	 * MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE}) public
-	 * ResponseEntity<String> delete(@PathVariable("id") Long idPessoa) {
-	 * 
-	 * Boolean delete = pessoaService.delete(idPessoa);
-	 * 
-	 * if(delete.equals(Boolean.TRUE)) return
-	 * ResponseEntity.status(HttpStatus.OK).body("Pessoa excluída com sucesso");
-	 * //return ResponseEntity.status(HttpStatus.OK).body(MessagesLoader.getMessage(
-	 * "message.pessoa_excluida_com_sucesso"));
-	 * 
-	 * return
-	 * ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Pessoa não encontrada");
-	 * //return
-	 * ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessagesLoader.getMessage(
-	 * "message.pessoa_nao_encontrada")); }
-	 */
-	 
+	
+	@PostMapping(produces = { MediaType.APPLICATION_JSON_VALUE,
+						 	  MediaType.APPLICATION_XML_VALUE,
+						 	  MediaType.APPLICATION_YAML_VALUE },
+				 consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<PessoaResponseDTO> save(@RequestBody PessoaRequestDTO requestDTO) {
+
+		PessoaResponseDTO responseDTO = pessoaService.save(requestDTO);
+
+		return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
+	}
+	  
+	
+	@PutMapping(produces = { MediaType.APPLICATION_JSON_VALUE,
+							 MediaType.APPLICATION_XML_VALUE,
+						 	 MediaType.APPLICATION_YAML_VALUE },
+				consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<PessoaResponseDTO> alteraPessoa(@RequestBody PessoaRequestDTO requestDTO) {
+
+		PessoaResponseDTO responseDTO = pessoaService.alteraPessoa(requestDTO);
+
+		return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
+	}
+	  
+	
+	@DeleteMapping(path = "/{id}",
+				   produces = {MediaType.APPLICATION_JSON_VALUE,
+						   	   MediaType.APPLICATION_XML_VALUE,
+						   	   MediaType.APPLICATION_YAML_VALUE})
+	public ResponseEntity<String> delete(@PathVariable("id") Long idPessoa) {
+	  
+		pessoaService.delete(idPessoa);
+	  
+		return ResponseEntity.status(HttpStatus.OK).body("Pessoa excluída com sucesso");
+		//return ResponseEntity.status(HttpStatus.OK).body(MessagesLoader.getMessage("message.pessoa_excluida_com_sucesso"));
+	  
+		//return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Pessoa não encontrada");
+		//return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessagesLoader.getMessage( "message.pessoa_nao_encontrada"));
+	}
 }

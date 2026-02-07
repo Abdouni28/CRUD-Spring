@@ -42,71 +42,86 @@ public class PessoaService {
 	
 	public List<PessoaResponseDTO> find(PessoaRequestDTO pessoaDTO) {
 	  
-	  List<Pessoa> listaPessoas;
-	  List<PessoaResponseDTO> listaPessoasDTO = new ArrayList<>();
+		List<Pessoa> listaPessoas;
+		List<PessoaResponseDTO> listaPessoasDTO = new ArrayList<>();
 	  
-	  if (pessoaDTO == null) {
+		if (pessoaDTO == null) {
 	  
-		  listaPessoas = repository.findAll();
+			listaPessoas = repository.findAll();
 		  
-		  listaPessoasDTO = mapper.toResponseDTOList(listaPessoas);
+			listaPessoasDTO = mapper.toResponseDTOList(listaPessoas);
 	  
-	  } else {
+		} else {
 	  
 		  //TODO: Implementar busca com filtros
-	  }
+		}
 	  
 		  //TODO revisitar hateoas
 		  //addHATEOASLinks(listaPessoasDTO.get(0).getId(), listaPessoasDTO.get(0));
 		  
-		  return listaPessoasDTO;
-	  }
+		return listaPessoasDTO;
+	}
 	  
-	  /*public PessoaDTO save(PessoaDTO pessoaDTO) {
+	public PessoaResponseDTO save(PessoaRequestDTO requestDTO) {
+	
+		Pessoa pessoa = mapper.toEntity(requestDTO);
+		pessoa = repository.save(pessoa);
+	
+		PessoaResponseDTO responseDTO = mapper.toResponseDTO(pessoa);
+		//addHATEOASLinks(pessoaDTO.getId(), pessoaDTO);
+	
+		return responseDTO;
+	}
 	  
-	  Pessoa pessoa = mapper.toEntity(pessoaDTO); pessoa = repository.save(pessoa);
+	
+    public PessoaResponseDTO alteraPessoa(PessoaRequestDTO requestDTO) {
+  
+    	
+    	PessoaResponseDTO responseDTO = findById(requestDTO.id());
+    	
+    	if(responseDTO == null) 
+			throw new IllegalArgumentException("Pessoa não encontrada");
+    	
+    	Pessoa pessoa = mapper.toEntity(requestDTO);
+    	pessoa = repository.save(pessoa);
+  
+    	responseDTO = mapper.toResponseDTO(pessoa);
 	  
-	  pessoaDTO = mapper.toDTO(pessoa); addHATEOASLinks(pessoaDTO.getId(),
-	  pessoaDTO);
+    	//addHATEOASLinks(pessoaDTO.getId(), pessoaDTO);
+  
+    	return responseDTO;
+    }
 	  
-	  return pessoaDTO; }
+	
+	public void delete(Long idPessoa) {
+
+		PessoaResponseDTO responseDTO = findById(idPessoa);
+
+		if (responseDTO != null) {
+
+			//addHATEOASLinks(pessoaDTO.getId(), pessoaDTO);
+			repository.deleteById(idPessoa);
+		
+		} else {
+
+			throw new IllegalArgumentException("Pessoa não encontrada");
+		}
+	}
 	  
-	  public PessoaDTO alteraPessoa(Long idPessoa, PessoaDTO pessoaDTO) {
-	  
-	  Pessoa pessoa = mapper.toEntity(pessoaDTO); pessoa.setId(idPessoa); pessoa =
-	  repository.save(pessoa);
-	  
-	  pessoaDTO = mapper.toDTO(pessoa); addHATEOASLinks(pessoaDTO.getId(),
-	  pessoaDTO);
-	  
-	  return pessoaDTO; }
-	  
-	  public Boolean delete(Long idPessoa) {
-	  
-	  PessoaDTO pessoaDTO = findById(idPessoa);
-	  
-	  if(pessoaDTO != null) {
-	  
-	  addHATEOASLinks(pessoaDTO.getId(), pessoaDTO);
-	  repository.deleteById(idPessoa);
-	  
-	  return Boolean.TRUE; }
-	  
-	  return Boolean.FALSE; }
-	  
-	  private void addHATEOASLinks(Long idPessoa, PessoaDTO pessoaDTO) {
-	  
-	  pessoaDTO.add(linkTo(methodOn(PessoaController.class).findById(idPessoa)).
-	  withRel("findById").withType("GET"));
-	  pessoaDTO.add(linkTo(methodOn(PessoaController.class).find(pessoaDTO)).
-	  withRel("findAll").withType("GET"));
-	  pessoaDTO.add(linkTo(methodOn(PessoaController.class).save(pessoaDTO)).
-	  withRel("create").withType("POST"));
-	  pessoaDTO.add(linkTo(methodOn(PessoaController.class).alteraPessoa(idPessoa,
-	  pessoaDTO)).withRel("update").withType("PUT"));
-	  pessoaDTO.add(linkTo(methodOn(PessoaController.class).delete(idPessoa)).
-	  withRel("delete").withType("DELETE"));
-	  
-	  }*/
-	 
+	/*
+	 * private void addHATEOASLinks(Long idPessoa, PessoaDTO pessoaDTO) {
+	 * 
+	 * pessoaDTO.add(linkTo(methodOn(PessoaController.class).findById(idPessoa)).
+	 * withRel("findById").withType("GET"));
+	 * pessoaDTO.add(linkTo(methodOn(PessoaController.class).find(pessoaDTO)).
+	 * withRel("findAll").withType("GET"));
+	 * pessoaDTO.add(linkTo(methodOn(PessoaController.class).save(pessoaDTO)).
+	 * withRel("create").withType("POST"));
+	 * pessoaDTO.add(linkTo(methodOn(PessoaController.class).alteraPessoa(idPessoa,
+	 * pessoaDTO)).withRel("update").withType("PUT"));
+	 * pessoaDTO.add(linkTo(methodOn(PessoaController.class).delete(idPessoa)).
+	 * withRel("delete").withType("DELETE"));
+	 * 
+	 * }
+	 */
 }

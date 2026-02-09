@@ -43,13 +43,12 @@ public class PessoaService {
 	public List<PessoaResponseDTO> find(PessoaRequestDTO pessoaDTO) {
 	  
 		List<Pessoa> listaPessoas;
-		List<PessoaResponseDTO> listaPessoasDTO = new ArrayList<>();
+		List<PessoaResponseDTO> listaResponseDTO = new ArrayList<>();
 	  
 		if (pessoaDTO == null) {
 	  
 			listaPessoas = repository.findAll();
-		  
-			listaPessoasDTO = mapper.toResponseDTOList(listaPessoas);
+			listaResponseDTO = mapper.toResponseDTOList(listaPessoas);
 	  
 		} else {
 	  
@@ -59,7 +58,7 @@ public class PessoaService {
 		  //TODO revisitar hateoas
 		  //addHATEOASLinks(listaPessoasDTO.get(0).getId(), listaPessoasDTO.get(0));
 		  
-		return listaPessoasDTO;
+		return listaResponseDTO;
 	}
 	  
 	public PessoaResponseDTO save(PessoaRequestDTO requestDTO) {

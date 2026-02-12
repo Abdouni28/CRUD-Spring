@@ -1,19 +1,16 @@
 package com.munir.crud_pessoa.entidades;
 
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,39 +21,42 @@ import lombok.Setter;
 @Setter
 //@Audited
 @Entity
-@Table(name = "pessoa")
+@Table(name = "endereco")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Pessoa implements Serializable {
+public class Endereco implements Serializable {
 
-	private static final long serialVersionUID = -4253028561247952390L;
+	private static final long serialVersionUID = 3272384083407304998L;
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
 	private Long id;
 	
-	@Column(name = "nome")
-	private String nome;
+	@Column(name = "logradouro")
+	private String logradouro;
 	
-	@Column(name = "cpf")
-	private String cpf;
+	@Column(name = "nome_logradouro")
+	private String nomeLogradouro;
 	
-	@Column(name = "email")
-	private String email;
+	@Column(name = "numero")
+	private String numero;
 	
-	@Column(name = "data_nascimento")
-	private LocalDate dataNascimento;
+	@Column(name = "bairro")
+	private String bairro;
 	
-	@Column(name = "ativa")
-	private Boolean ativa;
+	@Column(name = "cidade")
+	private String cidade;
 	
-	@OneToMany(mappedBy = "pessoa", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<Endereco> enderecos = new ArrayList<>();
-		/*
-		 * @OneToMany(mappedBy = "pessoa", fetch = FetchType.EAGER) private
-		 * List<Telefone> telefones = new ArrayList<>();
-		 */
+	@Column(name = "estado")
+	private String estado;
+	
+	@Column(name = "cep")
+	private String cep;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_pessoa")
+	private Pessoa pessoa;
 
 	@Override
 	public int hashCode() {
@@ -71,7 +71,7 @@ public class Pessoa implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Pessoa other = (Pessoa) obj;
+		Endereco other = (Endereco) obj;
 		return Objects.equals(id, other.id);
 	}
 }

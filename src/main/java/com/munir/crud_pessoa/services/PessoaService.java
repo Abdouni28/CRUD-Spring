@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.munir.crud_pessoa.dtos.request.PessoaRequestDTO;
 import com.munir.crud_pessoa.dtos.response.PessoaResponseDTO;
@@ -14,6 +15,7 @@ import com.munir.crud_pessoa.mapper.PessoaMapper;
 import com.munir.crud_pessoa.repositories.PessoaRepository;
 
 @Service
+@Transactional
 public class PessoaService {
 	
 	@Autowired
@@ -39,13 +41,12 @@ public class PessoaService {
 		return null;
 	}
 	
-	
-	public List<PessoaResponseDTO> find(PessoaRequestDTO pessoaDTO) {
+	public List<PessoaResponseDTO> find(PessoaRequestDTO requestDTO) {
 	  
 		List<Pessoa> listaPessoas;
 		List<PessoaResponseDTO> listaResponseDTO = new ArrayList<>();
 	  
-		if (pessoaDTO == null) {
+		if (requestDTO == null) {
 	  
 			listaPessoas = repository.findAll();
 			listaResponseDTO = mapper.toResponseDTOList(listaPessoas);
@@ -63,28 +64,26 @@ public class PessoaService {
 	  
 	public PessoaResponseDTO save(PessoaRequestDTO requestDTO) {
 	
-		Pessoa pessoa = mapper.toEntity(requestDTO);
-		pessoa = repository.save(pessoa);
+		Pessoa pessoa = mapper.toEntity(requestDTO);		
+		pessoa.getEnderecos().forEach(endereco -> endereco.setPessoa(pessoa));
+		
+		repository.save(pessoa);
 	
 		PessoaResponseDTO responseDTO = mapper.toResponseDTO(pessoa);
 		//addHATEOASLinks(pessoaDTO.getId(), pessoaDTO);
 	
 		return responseDTO;
 	}
-	  
-	
-    public PessoaResponseDTO alteraPessoa(PessoaRequestDTO requestDTO) {
+
+    public PessoaResponseDTO update(PessoaRequestDTO requestDTO) {
   
     	
     	PessoaResponseDTO responseDTO = findById(requestDTO.id());
     	
     	if(responseDTO == null) 
 			throw new IllegalArgumentException("Pessoa não encontrada");
-    	
-    	Pessoa pessoa = mapper.toEntity(requestDTO);
-    	pessoa = repository.save(pessoa);
   
-    	responseDTO = mapper.toResponseDTO(pessoa);
+    	responseDTO = save(requestDTO);
 	  
     	//addHATEOASLinks(pessoaDTO.getId(), pessoaDTO);
   
@@ -96,15 +95,11 @@ public class PessoaService {
 
 		PessoaResponseDTO responseDTO = findById(idPessoa);
 
-		if (responseDTO != null) {
-
-			//addHATEOASLinks(pessoaDTO.getId(), pessoaDTO);
-			repository.deleteById(idPessoa);
-		
-		} else {
-
+		if (responseDTO == null)
 			throw new IllegalArgumentException("Pessoa não encontrada");
-		}
+		
+		//addHATEOASLinks(pessoaDTO.getId(), pessoaDTO);
+		repository.deleteById(idPessoa);
 	}
 	  
 	/*

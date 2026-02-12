@@ -2,37 +2,12 @@ package com.munir.crud_pessoa.dtos.request;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record PessoaRequestDTO(Long id, String nome, String cpf, String email,
 							   @JsonProperty("data_nascimento") LocalDate dataNascimento,
-							   @JsonProperty("ativa") Boolean ativa) implements Serializable {
-
-	private static final long serialVersionUID = -1699673320879885526L;
+							   @JsonProperty("ativa") Boolean ativa,
+							   List<EnderecoRequestDTO> enderecos) implements Serializable {
 }
-/*
- * @Getter
- * 
- * @Setter private Long id;
- * 
- * @Getter
- * 
- * @Setter private String nome;
- * 
- * @Getter
- * 
- * @Setter private String cpf;
- * 
- * @Getter
- * 
- * @Setter private String email;
- * 
- * @Getter
- * 
- * @Setter private LocalDate dataNascimento;
- * 
- * @Getter
- * 
- * @Setter private String flagAtivo;
- */

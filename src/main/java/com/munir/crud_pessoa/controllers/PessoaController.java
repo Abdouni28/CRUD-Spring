@@ -48,11 +48,11 @@ public class PessoaController {
 							MediaType.APPLICATION_XML_VALUE,
 							MediaType.APPLICATION_YAML_VALUE },
 				consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<PessoaResponseDTO>> find(@RequestBody(required = false) PessoaRequestDTO pessoaDTO) {
+	public ResponseEntity<List<PessoaResponseDTO>> find(@RequestBody(required = false) PessoaRequestDTO requestDTO) {
 
-		List<PessoaResponseDTO> listaPessoas = pessoaService.find(pessoaDTO);
+		List<PessoaResponseDTO> responseDTO = pessoaService.find(requestDTO);
 
-		return ResponseEntity.status(HttpStatus.OK).body(listaPessoas);
+		return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
 	}
 	  
 	
@@ -72,9 +72,9 @@ public class PessoaController {
 							 MediaType.APPLICATION_XML_VALUE,
 						 	 MediaType.APPLICATION_YAML_VALUE },
 				consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<PessoaResponseDTO> alteraPessoa(@RequestBody PessoaRequestDTO requestDTO) {
+	public ResponseEntity<PessoaResponseDTO> update(@RequestBody PessoaRequestDTO requestDTO) {
 
-		PessoaResponseDTO responseDTO = pessoaService.alteraPessoa(requestDTO);
+		PessoaResponseDTO responseDTO = pessoaService.update(requestDTO);
 
 		return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
 	}

@@ -3,4 +3,4 @@
 
 CREATE INDEX idx_cep ON endereco (cep);
 
---rollback DROP INDEX idx_cep on endereco
+--rollback DROP INDEX idx_cep ON endereco

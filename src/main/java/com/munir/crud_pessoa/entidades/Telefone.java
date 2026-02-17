@@ -1,19 +1,16 @@
 package com.munir.crud_pessoa.entidades;
 
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,38 +21,29 @@ import lombok.Setter;
 @Setter
 //@Audited
 @Entity
-@Table(name = "pessoa")
+@Table(name = "telefone")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Pessoa implements Serializable {
+public class Telefone implements Serializable {
 
-	private static final long serialVersionUID = -4253028561247952390L;
+	private static final long serialVersionUID = 8692803294818155594L;
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
 	private Long id;
 	
-	@Column(name = "nome")
-	private String nome;
+	@Column(name = "numero")
+	private String numero;
 	
-	@Column(name = "cpf")
-	private String cpf;
+	@ManyToOne
+	@JoinColumn(name = "id_tipo_telefone")
+	//@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+	private TipoTelefone tipoTelefone;
 	
-	@Column(name = "email")
-	private String email;
-	
-	@Column(name = "data_nascimento")
-	private LocalDate dataNascimento;
-	
-	@Column(name = "ativa")
-	private Boolean ativa;
-	
-	@OneToMany(mappedBy = "pessoa", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<Endereco> enderecos = new ArrayList<>();
-
-	@OneToMany(mappedBy = "pessoa", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<Telefone> telefones = new ArrayList<>();
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_pessoa")
+	private Pessoa pessoa;
 
 	@Override
 	public int hashCode() {
@@ -70,7 +58,7 @@ public class Pessoa implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Pessoa other = (Pessoa) obj;
+		Telefone other = (Telefone) obj;
 		return Objects.equals(id, other.id);
 	}
 }

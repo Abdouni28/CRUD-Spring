@@ -1,12 +1,10 @@
 package com.munir.crud_pessoa.entidades;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -24,38 +22,23 @@ import lombok.Setter;
 @Setter
 //@Audited
 @Entity
-@Table(name = "pessoa")
+@Table(name = "tipo_telefone")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Pessoa implements Serializable {
+public class TipoTelefone implements Serializable {
 
-	private static final long serialVersionUID = -4253028561247952390L;
+	private static final long serialVersionUID = 8692803294818155594L;
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
 	private Long id;
 	
-	@Column(name = "nome")
-	private String nome;
+	@Column(name = "descricao")
+	private String descricao;
 	
-	@Column(name = "cpf")
-	private String cpf;
-	
-	@Column(name = "email")
-	private String email;
-	
-	@Column(name = "data_nascimento")
-	private LocalDate dataNascimento;
-	
-	@Column(name = "ativa")
-	private Boolean ativa;
-	
-	@OneToMany(mappedBy = "pessoa", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<Endereco> enderecos = new ArrayList<>();
-
-	@OneToMany(mappedBy = "pessoa", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<Telefone> telefones = new ArrayList<>();
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "tipoTelefone")
+    private List<Telefone> telefones = new ArrayList<>();
 
 	@Override
 	public int hashCode() {
@@ -70,7 +53,7 @@ public class Pessoa implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Pessoa other = (Pessoa) obj;
+		TipoTelefone other = (TipoTelefone) obj;
 		return Objects.equals(id, other.id);
 	}
 }

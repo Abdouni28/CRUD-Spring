@@ -66,6 +66,7 @@ public class PessoaService {
 	
 		Pessoa pessoa = mapper.toEntity(requestDTO);		
 		pessoa.getEnderecos().forEach(endereco -> endereco.setPessoa(pessoa));
+		pessoa.getTelefones().forEach(telefone -> telefone.setPessoa(pessoa));
 		
 		repository.save(pessoa);
 	
@@ -76,14 +77,15 @@ public class PessoaService {
 	}
 
     public PessoaResponseDTO update(PessoaRequestDTO requestDTO) {
-  
     	
     	PessoaResponseDTO responseDTO = findById(requestDTO.id());
     	
     	if(responseDTO == null) 
 			throw new IllegalArgumentException("Pessoa não encontrada");
   
-    	responseDTO = save(requestDTO);
+    	save(requestDTO);
+    	
+    	responseDTO = findById(requestDTO.id());
 	  
     	//addHATEOASLinks(pessoaDTO.getId(), pessoaDTO);
   
@@ -92,7 +94,7 @@ public class PessoaService {
 	  
 	
 	public void delete(Long idPessoa) {
-
+		
 		PessoaResponseDTO responseDTO = findById(idPessoa);
 
 		if (responseDTO == null)

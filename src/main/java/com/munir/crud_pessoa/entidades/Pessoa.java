@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.hibernate.envers.Audited;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,7 +24,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-//@Audited
+@Audited
 @Entity
 @Table(name = "pessoa")
 @NoArgsConstructor

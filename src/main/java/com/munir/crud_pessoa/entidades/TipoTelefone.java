@@ -20,7 +20,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-//@Audited
 @Entity
 @Table(name = "tipo_telefone")
 @NoArgsConstructor

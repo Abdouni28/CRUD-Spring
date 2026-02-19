@@ -3,6 +3,9 @@ package com.munir.crud_pessoa.entidades;
 import java.io.Serializable;
 import java.util.Objects;
 
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -19,7 +22,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-//@Audited
+@Audited
 @Entity
 @Table(name = "telefone")
 @NoArgsConstructor
@@ -38,7 +41,7 @@ public class Telefone implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name = "id_tipo_telefone")
-	//@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 	private TipoTelefone tipoTelefone;
 	
 	@ManyToOne(fetch = FetchType.LAZY)

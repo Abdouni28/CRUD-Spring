@@ -11,4 +11,4 @@ CREATE TABLE telefone(
 	CONSTRAINT fk_pessoa_telefone FOREIGN KEY (id_pessoa) REFERENCES pessoa (id)
 );
 
---rollback DROP TABLE teleone
+--rollback DROP TABLE telefone

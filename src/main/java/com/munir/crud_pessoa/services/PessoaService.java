@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,16 +77,23 @@ public class PessoaService {
 		return responseDTO;
 	}
 
+	@CacheEvict(value = "auditoria", allEntries = true)
     public PessoaResponseDTO update(PessoaRequestDTO requestDTO) {
     	
-    	PessoaResponseDTO responseDTO = findById(requestDTO.id());
+    	Optional<Pessoa> optionalPessoa = repository.findById(requestDTO.id());
     	
-    	if(responseDTO == null) 
+    	if(optionalPessoa.isEmpty()) 
 			throw new IllegalArgumentException("Pessoa não encontrada");
-  
-    	save(requestDTO);
     	
-    	responseDTO = findById(requestDTO.id());
+    	Pessoa pessoa = optionalPessoa.get();
+    	
+    	mapper.toEntityUpdate(requestDTO, pessoa);
+    	mapper.sincronizarEnderecos(pessoa, requestDTO.enderecos());
+    	mapper.sincronizarTelefones(pessoa, requestDTO.telefones());
+  
+    	repository.save(pessoa);
+    	
+    	PessoaResponseDTO responseDTO = findById(requestDTO.id());
 	  
     	//addHATEOASLinks(pessoaDTO.getId(), pessoaDTO);
   

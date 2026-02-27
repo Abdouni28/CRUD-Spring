@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.javers.core.metamodel.annotation.DiffIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -36,6 +38,7 @@ public class TipoTelefone implements Serializable {
 	@Column(name = "descricao")
 	private String descricao;
 	
+	@DiffIgnore
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "tipoTelefone")
     private List<Telefone> telefones = new ArrayList<>();
 

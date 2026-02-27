@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.hibernate.envers.Audited;
+import org.javers.core.metamodel.annotation.TypeName;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -24,8 +24,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Audited
 @Entity
+@TypeName("pessoa")
 @Table(name = "pessoa")
 @NoArgsConstructor
 @AllArgsConstructor

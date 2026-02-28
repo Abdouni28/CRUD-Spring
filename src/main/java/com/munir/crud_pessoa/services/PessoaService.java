@@ -9,9 +9,11 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.munir.crud_pessoa.dtos.request.MailRequestDTO;
 import com.munir.crud_pessoa.dtos.request.PessoaRequestDTO;
 import com.munir.crud_pessoa.dtos.response.PessoaResponseDTO;
 import com.munir.crud_pessoa.entidades.Pessoa;
+import com.munir.crud_pessoa.enums.EmailsENUM;
 import com.munir.crud_pessoa.mapper.PessoaMapper;
 import com.munir.crud_pessoa.repositories.PessoaRepository;
 
@@ -21,6 +23,9 @@ public class PessoaService {
 	
 	@Autowired
 	PessoaMapper mapper;
+	
+	@Autowired
+	EmailService emailService;
 	
 	@Autowired
 	PessoaRepository repository;
@@ -70,8 +75,12 @@ public class PessoaService {
 		pessoa.getTelefones().forEach(telefone -> telefone.setPessoa(pessoa));
 		
 		repository.save(pessoa);
-	
+		
 		PessoaResponseDTO responseDTO = mapper.toResponseDTO(pessoa);
+		
+		MailRequestDTO<Pessoa> mailDTO = new MailRequestDTO<Pessoa>(List.of(responseDTO.email()), EmailsENUM.NOVA_PESSOA_CADASTRADA, pessoa);
+		emailService.send(mailDTO);	
+		
 		//addHATEOASLinks(pessoaDTO.getId(), pessoaDTO);
 	
 		return responseDTO;

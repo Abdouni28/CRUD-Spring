@@ -29,3 +29,5 @@ javers:
   algorithm: simple
   commitIdGenerator: synchronized_sequence
   springDataAuditableRepositoryAspectEnabled: true
+jwt:
+    secret: Y2E5ZmQ0NTBhNjc2Y2U4NmRiZTI1ZDA0YjM4YzY5N2Y=

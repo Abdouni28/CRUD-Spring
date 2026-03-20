@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.javers.spring.auditable.AuthorProvider;
 import org.javers.spring.auditable.CommitPropertiesProvider;
+import org.javers.spring.auditable.SpringSecurityAuthorProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,7 +32,7 @@ public class JaversConfig {
 	
 	@Bean
 	AuthorProvider authorProvider() {
-	    return () -> "SISTEMA";
+	    return new SpringSecurityAuthorProvider();
 	}
 	
 	private String obterIpAtual() {

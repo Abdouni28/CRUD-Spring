@@ -84,8 +84,9 @@ public class AuditoriaMapperCustomImpl implements AuditoriaMapperCustom {
 		String tipoOperacao = TipoCommitAuditoriaENUM.resolverParaExibicao(shadow.getCdoSnapshot().getType().name());
 		LocalDateTime dataCommit = shadow.getCommitMetadata().getCommitDate();
 		String enderecoIp = shadow.getCommitMetadata().getProperties().get("endereco_ip");
+		String autor = shadow.getCommitMetadata().getAuthor();
 		
-		return new AuditoriaResponseDTO(idRevisao, tipoEntidade, idEntidade, tipoOperacao, dataCommit, enderecoIp, List.of());
+		return new AuditoriaResponseDTO(idRevisao, tipoEntidade, idEntidade, tipoOperacao, dataCommit, enderecoIp, autor, List.of());
 	}
 	
 	private List<AlteracaoCampoRevisaoDTO> obterAlteracoesCampo(Shadow<Object> objetoAntigo, Shadow<Object> objetoNovo) {

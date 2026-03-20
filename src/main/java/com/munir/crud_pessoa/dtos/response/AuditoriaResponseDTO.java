@@ -16,7 +16,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"id_commit", "tipo_entidade", "id_entidade", "tipo_operacao", "data_commit", "endereco_ip", "alteracoes"})
+@JsonPropertyOrder({"id_commit", "tipo_entidade", "id_entidade", "tipo_operacao", "data_commit", "endereco_ip", "autor", "alteracoes"})
 public class AuditoriaResponseDTO implements Serializable {
 
 	private static final long serialVersionUID = -8507954488377750927L;
@@ -38,6 +38,9 @@ public class AuditoriaResponseDTO implements Serializable {
     
     @JsonProperty("endereco_ip")
     private String enderecoIp;
+    
+    @JsonProperty("autor")
+    private String autor;
     
     List<AlteracaoCampoRevisaoDTO> alteracoes;
 }

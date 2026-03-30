@@ -24,7 +24,7 @@ public class ResourcesLoader {
 			return new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
         

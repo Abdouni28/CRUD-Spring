@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,18 +16,20 @@ import com.munir.crud_pessoa.enums.EmailsENUM;
 import com.munir.crud_pessoa.mapper.PessoaMapper;
 import com.munir.crud_pessoa.repositories.PessoaRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class PessoaService {
 	
-	@Autowired
-	PessoaMapper mapper;
+	private final PessoaMapper mapper;
 	
-	@Autowired
-	EmailService emailService;
+	//private final ValidadorPessoa validador;
 	
-	@Autowired
-	PessoaRepository repository;
+	private final EmailService emailService;
+	
+	private final PessoaRepository repository;
 	
 	public PessoaResponseDTO findById(Long idPessoa) {
 		
@@ -70,7 +71,10 @@ public class PessoaService {
 	  
 	public PessoaResponseDTO save(PessoaRequestDTO requestDTO) {
 	
-		Pessoa pessoa = mapper.toEntity(requestDTO);		
+		Pessoa pessoa = mapper.toEntity(requestDTO);
+		
+		//validador.validar(pessoa);
+		
 		pessoa.getEnderecos().forEach(endereco -> endereco.setPessoa(pessoa));
 		pessoa.getTelefones().forEach(telefone -> telefone.setPessoa(pessoa));
 		
@@ -83,7 +87,7 @@ public class PessoaService {
 		
 		//addHATEOASLinks(pessoaDTO.getId(), pessoaDTO);
 	
-		return responseDTO;
+		return null;
 	}
 
 	@CacheEvict(value = "auditoria", allEntries = true)

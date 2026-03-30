@@ -1,24 +1,20 @@
-/*
- * package com.munir.curso_spring.utils;
- * 
- * import org.springframework.context.annotation.Configuration; import
- * org.springframework.context.annotation.PropertySource; import
- * org.springframework.core.env.Environment;
- * 
- * @Configuration
- * 
- * @PropertySource("messages.properties") public class MessagesLoader {
- * 
- * private static Environment env;
- * 
- * MessagesLoader(Environment env) {
- * 
- * MessagesLoader.env = env; }
- * 
- * public static String getMessage(String key) {
- * 
- * return env.getProperty(key); } }
- * 
- * package com;
- * 
- */
+package com.munir.crud_pessoa.utils;
+  
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
+
+@Component
+@RequiredArgsConstructor
+@PropertySource("messages.properties")
+public class MessagesLoader {
+	
+	private final Environment env;
+
+    public String loadMessage(String key) {
+        	
+    	return env.getProperty(key);
+    }
+}

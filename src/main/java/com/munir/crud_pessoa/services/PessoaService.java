@@ -1,20 +1,30 @@
 package com.munir.crud_pessoa.services;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.munir.crud_pessoa.dtos.request.MailRequestDTO;
 import com.munir.crud_pessoa.dtos.request.PessoaRequestDTO;
+import com.munir.crud_pessoa.dtos.request.filtros_busca.FiltrosBuscaPessoaRequestDTO;
 import com.munir.crud_pessoa.dtos.response.PessoaResponseDTO;
 import com.munir.crud_pessoa.entidades.Pessoa;
 import com.munir.crud_pessoa.enums.EmailsENUM;
+import com.munir.crud_pessoa.exceptions.PessoaValidationException;
 import com.munir.crud_pessoa.mapper.PessoaMapper;
 import com.munir.crud_pessoa.repositories.PessoaRepository;
+import com.munir.crud_pessoa.repositories.specifications.PessoaSpecifications;
+import com.munir.crud_pessoa.utils.MessagesLoader;
+import com.munir.crud_pessoa.validadores.ValidadorPageable;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,13 +33,20 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PessoaService {
 	
+	@Autowired
+	MessagesLoader messagesLoader;
+	
 	private final PessoaMapper mapper;
 	
 	//private final ValidadorPessoa validador;
 	
+	private final ValidadorPageable validadorPageable;
+	
 	private final EmailService emailService;
 	
 	private final PessoaRepository repository;
+	
+	private final Set<String> sortProperties = Set.of("id", "nome", "cpf", "email", "dataNascimento");
 	
 	public PessoaResponseDTO findById(Long idPessoa) {
 		
@@ -48,7 +65,9 @@ public class PessoaService {
 		return null;
 	}
 	
-	public List<PessoaResponseDTO> find(PessoaRequestDTO requestDTO) {
+	public List<PessoaResponseDTO> find(FiltrosBuscaPessoaRequestDTO requestDTO, Pageable pageable) {
+
+		validadorPageable.validarSortProperties(pageable, sortProperties);
 	  
 		List<Pessoa> listaPessoas;
 		List<PessoaResponseDTO> listaResponseDTO = new ArrayList<>();
@@ -56,15 +75,18 @@ public class PessoaService {
 		if (requestDTO == null) {
 	  
 			listaPessoas = repository.findAll();
-			listaResponseDTO = mapper.toResponseDTOList(listaPessoas);
 	  
 		} else {
 	  
-		  //TODO: Implementar busca com filtros
+			Specification<Pessoa> specification = PessoaSpecifications.montarSpecificationsFindAll(requestDTO);
+			
+			listaPessoas = repository.findAll(specification, pageable).getContent();
 		}
 	  
 		  //TODO revisitar hateoas
 		  //addHATEOASLinks(listaPessoasDTO.get(0).getId(), listaPessoasDTO.get(0));
+		
+		listaResponseDTO = mapper.toResponseDTOList(listaPessoas);
 		  
 		return listaResponseDTO;
 	}
@@ -87,7 +109,7 @@ public class PessoaService {
 		
 		//addHATEOASLinks(pessoaDTO.getId(), pessoaDTO);
 	
-		return null;
+		return responseDTO;
 	}
 
 	@CacheEvict(value = "auditoria", allEntries = true)
@@ -96,7 +118,8 @@ public class PessoaService {
     	Optional<Pessoa> optionalPessoa = repository.findById(requestDTO.id());
     	
     	if(optionalPessoa.isEmpty()) 
-			throw new IllegalArgumentException("Pessoa não encontrada");
+			throw new PessoaValidationException(MessageFormat.format(messagesLoader.loadMessage("message.nenhuma_pessoa_encontrada_by_id"),
+												requestDTO.id()));				
     	
     	Pessoa pessoa = optionalPessoa.get();
     	
@@ -119,7 +142,8 @@ public class PessoaService {
 		PessoaResponseDTO responseDTO = findById(idPessoa);
 
 		if (responseDTO == null)
-			throw new IllegalArgumentException("Pessoa não encontrada");
+			throw new PessoaValidationException(MessageFormat.format(messagesLoader.loadMessage("message.nenhuma_pessoa_encontrada_by_id"),
+												idPessoa));
 		
 		//addHATEOASLinks(pessoaDTO.getId(), pessoaDTO);
 		repository.deleteById(idPessoa);

@@ -59,8 +59,9 @@ public class SecurityConfig {
 		        
 		        LocalDateTime timestamp = LocalDateTime.now();
 				String mensagem = messagesLoader.loadMessage("message.token_autenticacao_invalido");
+				String nomeException = authException.getClass().getSimpleName();
 				
-		        ExceptionResponseDTO responseDTO = new ExceptionResponseDTO(timestamp, mensagem, null);
+		        ExceptionResponseDTO responseDTO = new ExceptionResponseDTO(timestamp, mensagem, nomeException);
 
 		        response.getWriter().write(mapper.writeValueAsString(responseDTO));
 			}

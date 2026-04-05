@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class ValidadorPessoa extends Validador<Pessoa> {
 
 	private final PessoaRepository repository;
+	
 	@Override
 	public void validar(Pessoa pessoa) {
 

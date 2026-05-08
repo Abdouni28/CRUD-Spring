@@ -8,6 +8,8 @@ import java.util.Objects;
 
 import org.javers.core.metamodel.annotation.TypeName;
 
+import com.munir.crud_pessoa.security.entidades.Usuario;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,6 +18,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -52,6 +55,9 @@ public class Pessoa implements Serializable {
 	
 	@Column(name = "ativa")
 	private Boolean ativa;
+	
+	@OneToOne(mappedBy = "pessoa")
+	private Usuario usuario;
 	
 	@OneToMany(mappedBy = "pessoa", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Endereco> enderecos = new ArrayList<>();

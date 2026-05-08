@@ -17,7 +17,7 @@ import com.munir.crud_pessoa.entidades.Pessoa;
 import com.munir.crud_pessoa.entidades.Telefone;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
-		uses = {EnderecoMapper.class, TelefoneMapper.class})
+		uses = {EnderecoMapper.class, TelefoneMapper.class, UsuarioMapper.class})
 public abstract class PessoaMapper implements BaseMapper<Pessoa, PessoaRequestDTO, PessoaResponseDTO> {
 
 	@Autowired

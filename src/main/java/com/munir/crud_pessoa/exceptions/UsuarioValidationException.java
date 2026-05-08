@@ -7,15 +7,15 @@ import lombok.Getter;
 import lombok.Setter;
 
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-public class PessoaValidationException extends RuntimeException {
+public class UsuarioValidationException extends RuntimeException {
 
-	private static final long serialVersionUID = -7642318694345390099L;
-
+	private static final long serialVersionUID = 1571142264404557574L;
+	
 	@Getter
 	@Setter
 	private String mensagem;
 	
-	public PessoaValidationException(String mensagem) {		
+	public UsuarioValidationException(String mensagem) {		
 		super(mensagem);
 	}
 }

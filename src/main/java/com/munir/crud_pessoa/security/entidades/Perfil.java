@@ -23,6 +23,9 @@ import lombok.Setter;
 public class Perfil implements Serializable {
 
 	private static final long serialVersionUID = -5308118885492662103L;
+	
+	public static final String ROLE_ADMIN = "ROLE_ADMIN";
+	public static final String ROLE_PESSOA = "ROLE_PESSOA";
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,5 +50,15 @@ public class Perfil implements Serializable {
 			return false;
 		Perfil other = (Perfil) obj;
 		return Objects.equals(id, other.id);
+	}
+	
+	@Getter
+	@AllArgsConstructor
+	public enum PerfilENUM {
+		ADMIN(1L, "ADMIN"),
+		PESSOA(2L, "PESSOA");
+		
+		private final Long id;
+		private final String nome;
 	}
 }

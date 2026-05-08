@@ -23,8 +23,9 @@ import com.munir.crud_pessoa.exceptions.PessoaValidationException;
 import com.munir.crud_pessoa.mapper.PessoaMapper;
 import com.munir.crud_pessoa.repositories.PessoaRepository;
 import com.munir.crud_pessoa.repositories.specifications.PessoaSpecifications;
+import com.munir.crud_pessoa.security.services.UsuarioService;
 import com.munir.crud_pessoa.utils.MessagesLoader;
-import com.munir.crud_pessoa.validadores.ValidadorPageable;
+import com.munir.crud_pessoa.validadores.ValidadorPessoa;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,17 +37,14 @@ public class PessoaService {
 	@Autowired
 	MessagesLoader messagesLoader;
 	
-	private final PessoaMapper mapper;
+	private final PessoaMapper mapper;	
 	
 	//private final ValidadorPessoa validador;
 	
-	private final ValidadorPageable validadorPageable;
-	
-	private final EmailService emailService;
+	private final EmailService emailService;	
+	private final UsuarioService usuarioService;
 	
 	private final PessoaRepository repository;
-	
-	private final Set<String> sortProperties = Set.of("id", "nome", "cpf", "email", "dataNascimento");
 	
 	public PessoaResponseDTO findById(Long idPessoa) {
 		
@@ -66,8 +64,6 @@ public class PessoaService {
 	}
 	
 	public List<PessoaResponseDTO> find(FiltrosBuscaPessoaRequestDTO requestDTO, Pageable pageable) {
-
-		validadorPageable.validarSortProperties(pageable, sortProperties);
 	  
 		List<Pessoa> listaPessoas;
 		List<PessoaResponseDTO> listaResponseDTO = new ArrayList<>();
@@ -77,6 +73,8 @@ public class PessoaService {
 			listaPessoas = repository.findAll();
 	  
 		} else {
+			
+			//validador.validarSortProperties(pageable, Set.of("id", "nome", "cpf", "email", "dataNascimento"));
 	  
 			Specification<Pessoa> specification = PessoaSpecifications.montarSpecificationsFindAll(requestDTO);
 			
@@ -99,6 +97,8 @@ public class PessoaService {
 		
 		pessoa.getEnderecos().forEach(endereco -> endereco.setPessoa(pessoa));
 		pessoa.getTelefones().forEach(telefone -> telefone.setPessoa(pessoa));
+		
+		String senha = usuarioService.criarUsuario(pessoa, Boolean.TRUE, Boolean.FALSE);
 		
 		repository.save(pessoa);
 		

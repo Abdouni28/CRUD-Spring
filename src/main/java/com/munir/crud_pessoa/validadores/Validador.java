@@ -4,8 +4,10 @@ import java.lang.reflect.Field;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 
 import com.munir.crud_pessoa.enums.TipoDocumentoENUM;
 import com.munir.crud_pessoa.exceptions.PessoaValidationException;
@@ -30,6 +32,17 @@ public abstract class Validador<T> {
 	protected MessagesLoader messagesLoader;
 
 	public abstract void validar(T entity);
+	
+	public void validarSortProperties(Pageable pageable, Set<String> sortProperties) {
+		
+		pageable.getSort().forEach(sort -> {
+			
+			if (!sortProperties.contains(sort.getProperty())) {
+				throw new PessoaValidationException(MessageFormat.format(messagesLoader.loadMessage("message.campo_ordenacao_invalido"),
+													sort.getProperty()));
+			}
+		});
+	}
 	
 	protected <T1> void validarTodosCamposPreenchidos(T1 entity) {
 		

@@ -8,10 +8,13 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.munir.crud_pessoa.dtos.request.UsuarioRequestDTO;
+import com.munir.crud_pessoa.dtos.response.UsuarioResponseDTO;
 import com.munir.crud_pessoa.security.entidades.Usuario;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public abstract class UsuarioMapper {	
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
+		uses = {PerfilMapper.class})
+public abstract class UsuarioMapper implements BaseMapper<Usuario, UsuarioRequestDTO, UsuarioResponseDTO> {	
 
 	public UserDetails usuarioToUserDetails(Usuario usuario) {
 		

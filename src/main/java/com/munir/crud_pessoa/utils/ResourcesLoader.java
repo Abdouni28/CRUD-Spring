@@ -3,31 +3,24 @@ package com.munir.crud_pessoa.utils;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.stereotype.Component;
 
-import lombok.RequiredArgsConstructor;
+public final class ResourcesLoader {
 
-@Component
-@RequiredArgsConstructor
-public class ResourcesLoader {
+    private ResourcesLoader() {}
 
-	private final ResourceLoader resourceLoader;
+    public static String loadResourceAsString(String path) {
 
-    public String loadResourceAsString(String path) {
-    	
         try {
-        	
-        	Resource resource = resourceLoader.getResource("classpath:" + path);
-        	
-			return new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
-			
-		} catch (IOException e) {
 
-			e.printStackTrace();
-		}
-        
-        return null;
+            Resource resource = new ClassPathResource(path);
+
+            return new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+
+        } catch (IOException e) {
+
+            throw new RuntimeException("Erro ao carregar resource: " + path, e);
+        }
     }
 }

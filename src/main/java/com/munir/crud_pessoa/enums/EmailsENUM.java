@@ -1,22 +1,25 @@
 package com.munir.crud_pessoa.enums;
 
+import com.munir.crud_pessoa.utils.ResourcesLoader;
+
 import lombok.Getter;
 
 @Getter
 public enum EmailsENUM {
 	
-	NOVA_PESSOA_CADASTRADA("Bem vindo ao nosso sistema!", "emails/email_nova_pessoa_cadastrada.html", Boolean.TRUE);
+	NOVA_PESSOA_CADASTRADA("Bem vindo ao nosso sistema!", "emails/email_nova_pessoa_cadastrada.html");
 
-	private String assunto;
+	private final String assunto;
 	
-	private String arquivoEmail;
-	
-	private Boolean possuiParametros;
+	private final String arquivoEmail;
 
-	EmailsENUM(String assunto, String arquivoEmail, Boolean possuiParametros) {
+	EmailsENUM(String assunto, String arquivoEmail) {
 
 		this.assunto = assunto;
 		this.arquivoEmail = arquivoEmail;
-		this.possuiParametros = possuiParametros;
+	}
+
+	public String getCorpoEmail() {
+	    return ResourcesLoader.loadResourceAsString(arquivoEmail);
 	}
 }

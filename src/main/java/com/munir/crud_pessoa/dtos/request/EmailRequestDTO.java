@@ -1,9 +1,8 @@
 package com.munir.crud_pessoa.dtos.request;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
-
-import com.munir.crud_pessoa.enums.EmailsENUM;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,14 +13,13 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MailRequestDTO<T> implements Serializable {
+public class EmailRequestDTO implements Serializable {
 
 	private static final long serialVersionUID = -7025107975112277745L;
 
-	private List<String> destinatarios;
+	private List<String> destinatarios = new ArrayList<>();
 	
-	private EmailsENUM emailENUM;
+	private String assunto;
 	
-	//Objeto usado para montar os parâmetros do email, caso o emailENUM tenha parâmetros. Ex.: Pessoa, Endereço, etc.
-	private T objeto;
+	private String corpo;
 }

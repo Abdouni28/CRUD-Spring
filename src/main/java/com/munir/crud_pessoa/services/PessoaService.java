@@ -2,9 +2,9 @@ package com.munir.crud_pessoa.services;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -13,19 +13,18 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.munir.crud_pessoa.dtos.request.MailRequestDTO;
 import com.munir.crud_pessoa.dtos.request.PessoaRequestDTO;
 import com.munir.crud_pessoa.dtos.request.filtros_busca.FiltrosBuscaPessoaRequestDTO;
 import com.munir.crud_pessoa.dtos.response.PessoaResponseDTO;
+import com.munir.crud_pessoa.emails.Email;
+import com.munir.crud_pessoa.emails.EmailNovaPessoaCadastrada;
 import com.munir.crud_pessoa.entidades.Pessoa;
-import com.munir.crud_pessoa.enums.EmailsENUM;
 import com.munir.crud_pessoa.exceptions.PessoaValidationException;
 import com.munir.crud_pessoa.mapper.PessoaMapper;
 import com.munir.crud_pessoa.repositories.PessoaRepository;
 import com.munir.crud_pessoa.repositories.specifications.PessoaSpecifications;
 import com.munir.crud_pessoa.security.services.UsuarioService;
 import com.munir.crud_pessoa.utils.MessagesLoader;
-import com.munir.crud_pessoa.validadores.ValidadorPessoa;
 
 import lombok.RequiredArgsConstructor;
 
@@ -104,8 +103,8 @@ public class PessoaService {
 		
 		PessoaResponseDTO responseDTO = mapper.toResponseDTO(pessoa);
 		
-		MailRequestDTO<Pessoa> mailDTO = new MailRequestDTO<Pessoa>(List.of(responseDTO.email()), EmailsENUM.NOVA_PESSOA_CADASTRADA, pessoa);
-		emailService.send(mailDTO);	
+		Email email = new EmailNovaPessoaCadastrada(responseDTO.nome(), responseDTO.usuario().nomeUsuario(), senha, Arrays.asList(responseDTO.email()));
+		emailService.send(email);	
 		
 		//addHATEOASLinks(pessoaDTO.getId(), pessoaDTO);
 	

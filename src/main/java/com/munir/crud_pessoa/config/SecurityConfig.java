@@ -3,7 +3,6 @@ package com.munir.crud_pessoa.config;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -35,9 +34,6 @@ import jakarta.servlet.http.HttpServletResponse;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-	
-	@Autowired
-	protected MessagesLoader messagesLoader;
 
     @Bean
     JwtAuthenticationFilter jwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService) {
@@ -58,7 +54,7 @@ public class SecurityConfig {
 		        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		        
 		        LocalDateTime timestamp = LocalDateTime.now();
-				String mensagem = messagesLoader.loadMessage("message.token_autenticacao_invalido");
+				String mensagem = MessagesLoader.loadMessage("message.token_autenticacao_invalido");
 				String nomeException = authException.getClass().getSimpleName();
 				
 		        ExceptionResponseDTO responseDTO = new ExceptionResponseDTO(timestamp, mensagem, nomeException);

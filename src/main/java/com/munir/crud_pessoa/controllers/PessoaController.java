@@ -3,7 +3,6 @@ package com.munir.crud_pessoa.controllers;
 import java.text.MessageFormat;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,9 +29,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/pessoa")
 public class PessoaController {
 	
-	@Autowired
-	MessagesLoader messagesLoader;
-	
 	private final PessoaService pessoaService;	
 	
 	@GetMapping(path = "/{id}",
@@ -45,7 +41,7 @@ public class PessoaController {
 		
 		if(responseDTO == null)
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-					MessageFormat.format(messagesLoader.loadMessage("message.nenhuma_pessoa_encontrada_by_id"), idPessoa));
+					MessageFormat.format(MessagesLoader.loadMessage("message.nenhuma_pessoa_encontrada_by_id"), idPessoa));
 	
 		return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
 	}

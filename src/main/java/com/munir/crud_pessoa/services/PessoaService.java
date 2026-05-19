@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -32,9 +31,6 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 @RequiredArgsConstructor
 public class PessoaService {
-	
-	@Autowired
-	MessagesLoader messagesLoader;
 	
 	private final PessoaMapper mapper;	
 	
@@ -117,7 +113,7 @@ public class PessoaService {
     	Optional<Pessoa> optionalPessoa = repository.findById(requestDTO.id());
     	
     	if(optionalPessoa.isEmpty()) 
-			throw new PessoaValidationException(MessageFormat.format(messagesLoader.loadMessage("message.nenhuma_pessoa_encontrada_by_id"),
+			throw new PessoaValidationException(MessageFormat.format(MessagesLoader.loadMessage("message.nenhuma_pessoa_encontrada_by_id"),
 												requestDTO.id()));				
     	
     	Pessoa pessoa = optionalPessoa.get();
@@ -141,7 +137,7 @@ public class PessoaService {
 		PessoaResponseDTO responseDTO = findById(idPessoa);
 
 		if (responseDTO == null)
-			throw new PessoaValidationException(MessageFormat.format(messagesLoader.loadMessage("message.nenhuma_pessoa_encontrada_by_id"),
+			throw new PessoaValidationException(MessageFormat.format(MessagesLoader.loadMessage("message.nenhuma_pessoa_encontrada_by_id"),
 												idPessoa));
 		
 		//addHATEOASLinks(pessoaDTO.getId(), pessoaDTO);

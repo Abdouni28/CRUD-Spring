@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 
 import com.munir.crud_pessoa.enums.TipoDocumentoENUM;
@@ -27,9 +26,6 @@ public abstract class Validador<T> {
 	protected final String PARENTESIS_DIREITO = ")";
 	protected final String HIFEN = "-";
 	protected final String PONTO = ".";
-	
-	@Autowired
-	protected MessagesLoader messagesLoader;
 
 	public abstract void validar(T entity);
 	
@@ -38,7 +34,7 @@ public abstract class Validador<T> {
 		pageable.getSort().forEach(sort -> {
 			
 			if (!sortProperties.contains(sort.getProperty())) {
-				throw new PessoaValidationException(MessageFormat.format(messagesLoader.loadMessage("message.campo_ordenacao_invalido"),
+				throw new PessoaValidationException(MessageFormat.format(MessagesLoader.loadMessage("message.campo_ordenacao_invalido"),
 													sort.getProperty()));
 			}
 		});
@@ -66,7 +62,7 @@ public abstract class Validador<T> {
 				var valorCampo = campo.get(entity);
 				
 				if(valorCampo == null || (campo.getType() == String.class && valorCampo.toString().isBlank()))
-					throw new PessoaValidationException(MessageFormat.format(messagesLoader.loadMessage("message.todos_campos_obrigatorios"),
+					throw new PessoaValidationException(MessageFormat.format(MessagesLoader.loadMessage("message.todos_campos_obrigatorios"),
 														entity.getClass().getSimpleName().toLowerCase()));
 				
 			} catch (IllegalAccessException e) {
@@ -96,7 +92,7 @@ public abstract class Validador<T> {
 		int digitoVerificadorCorreto2 = calcularDigitoVerificadorCpfCorreto(documento, 2);
 		
 		if((digitoVerificador1 != digitoVerificadorCorreto1) || (digitoVerificador2 != digitoVerificadorCorreto2))
-			throw new PessoaValidationException(messagesLoader.loadMessage("message.cpf_invalido"));
+			throw new PessoaValidationException(MessagesLoader.loadMessage("message.cpf_invalido"));
 	}
 	
 	private Integer calcularDigitoVerificadorCpfCorreto(String cpf, Integer qualVerificador) {

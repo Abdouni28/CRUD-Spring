@@ -6,7 +6,6 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,9 +27,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class UsuarioService implements UserDetailsService {
-	
-	@Autowired
-	MessagesLoader messagesLoader;
 	
 	private final UsuarioMapper usuarioMapper;
 	
@@ -86,7 +82,7 @@ public class UsuarioService implements UserDetailsService {
 					
 				} else {
 					
-					throw new UsuarioValidationException(MessageFormat.format(messagesLoader.loadMessage("message.usuario_ja_possui_perfil"),
+					throw new UsuarioValidationException(MessageFormat.format(MessagesLoader.loadMessage("message.usuario_ja_possui_perfil"),
 														 usuario.getNomeUsuario(), perfil.getNome()));
 				}
 			});
@@ -117,7 +113,7 @@ public class UsuarioService implements UserDetailsService {
 					
 				} else {
 					
-					throw new UsuarioValidationException(MessageFormat.format(messagesLoader.loadMessage("message.usuario_nao_possui_perfil"),
+					throw new UsuarioValidationException(MessageFormat.format(MessagesLoader.loadMessage("message.usuario_nao_possui_perfil"),
 														 usuario.getNomeUsuario(), perfil.getNome()));
 				}
 			});

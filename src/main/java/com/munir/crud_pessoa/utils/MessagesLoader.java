@@ -1,20 +1,15 @@
 package com.munir.crud_pessoa.utils;
   
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
+import java.util.ResourceBundle;
 
-import lombok.RequiredArgsConstructor;
+public final class MessagesLoader {
 
-@Component
-@RequiredArgsConstructor
-@PropertySource("messages.properties")
-public class MessagesLoader {
-	
-	private final Environment env;
+    private static final ResourceBundle BUNDLE = ResourceBundle.getBundle("messages");
 
-    public String loadMessage(String key) {
-        	
-    	return env.getProperty(key);
+    private MessagesLoader() {}
+
+    public static String loadMessage(String key) {
+
+        return BUNDLE.getString(key);
     }
 }

@@ -1,17 +1,12 @@
-package com.munir.crud_pessoa.emails;
+package com.munir.crud_pessoa.email_templates;
 
 import java.util.List;
 
 import com.munir.crud_pessoa.dtos.request.EmailRequestDTO;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
-public abstract class Email {
+public abstract class EmailTemplate {
 	
-	private final List<String> destinatarios;
-	
-	public EmailRequestDTO montarEmailRequestDTO() {
+	public EmailRequestDTO montarEmailTemplate() {
 		
 		List<String> destinatarios = getDestinatarios();
 		String assunto = getAssunto();
@@ -21,11 +16,8 @@ public abstract class Email {
 		
 		return emailRequestDTO;
 	}
-	
-	private List<String> getDestinatarios(){
-		
-		return this.destinatarios;
-	};
+
+	protected abstract List<String> getDestinatarios();
 	
 	protected abstract String getAssunto();
 	

@@ -2,7 +2,6 @@ package com.munir.crud_pessoa.services;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,8 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.munir.crud_pessoa.dtos.request.PessoaRequestDTO;
 import com.munir.crud_pessoa.dtos.request.filtros_busca.FiltrosBuscaPessoaRequestDTO;
 import com.munir.crud_pessoa.dtos.response.PessoaResponseDTO;
-import com.munir.crud_pessoa.emails.Email;
-import com.munir.crud_pessoa.emails.EmailNovaPessoaCadastrada;
+import com.munir.crud_pessoa.email_templates.EmailNovaPessoaCadastradaTemplate;
+import com.munir.crud_pessoa.email_templates.EmailTemplate;
 import com.munir.crud_pessoa.entidades.Pessoa;
 import com.munir.crud_pessoa.exceptions.PessoaValidationException;
 import com.munir.crud_pessoa.mapper.PessoaMapper;
@@ -93,14 +92,14 @@ public class PessoaService {
 		pessoa.getEnderecos().forEach(endereco -> endereco.setPessoa(pessoa));
 		pessoa.getTelefones().forEach(telefone -> telefone.setPessoa(pessoa));
 		
-		String senha = usuarioService.criarUsuario(pessoa, Boolean.TRUE, Boolean.FALSE);
+		usuarioService.criarUsuario(pessoa);
 		
 		repository.save(pessoa);
 		
 		PessoaResponseDTO responseDTO = mapper.toResponseDTO(pessoa);
 		
-		Email email = new EmailNovaPessoaCadastrada(responseDTO.nome(), responseDTO.usuario().nomeUsuario(), senha, Arrays.asList(responseDTO.email()));
-		emailService.send(email);	
+		EmailTemplate emailTemplate = new EmailNovaPessoaCadastradaTemplate(responseDTO);
+		emailService.enviarParaFila(emailTemplate);	
 		
 		//addHATEOASLinks(pessoaDTO.getId(), pessoaDTO);
 	

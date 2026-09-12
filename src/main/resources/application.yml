@@ -24,6 +24,15 @@ spring:
           auth: true
           starttls:
             enable: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: rabbit
+    password: rabbit
+    template:
+      exchange: email-a-enviar.exchange
+      routing-key: email-a-enviar.routing-key
+      default-receive-queue: email-a-enviar.queue
 javers:
   mappingStyle: field
   algorithm: simple

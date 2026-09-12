@@ -5,7 +5,9 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import com.munir.crud_pessoa.dtos.request.EmailRequestDTO;
-import com.munir.crud_pessoa.emails.Email;
+import com.munir.crud_pessoa.dtos.response.EmailResponseDTO;
+import com.munir.crud_pessoa.email_templates.EmailTemplate;
+import com.munir.crud_pessoa.publishers.EmailPublisher;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -14,30 +16,30 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class EmailService {
+	
+	private final EmailPublisher emailPublisher;
 
 	private final JavaMailSender mailSender;
-
+  
 	private static final String UTF_8_ENCODING = "UTF-8";
-
-    public void send(Email email) {
-    	
-        try {
-        	
-        	EmailRequestDTO requestDTO = email.montarEmailRequestDTO();
-        	
-        	MimeMessage message = mailSender.createMimeMessage();
-            
-            MimeMessageHelper helper = new MimeMessageHelper(message, UTF_8_ENCODING);
-            helper.setTo(requestDTO.getDestinatarios().toArray(new String[0]));
-			helper.setSubject(requestDTO.getAssunto());
-			helper.setText(requestDTO.getCorpo(), true);
-	        
-	        mailSender.send(message);
-	        
-		} catch (MessagingException e) {
+	 
+	
+	public void enviarEmail(EmailResponseDTO responseDTO) throws MessagingException {
 			
-			e.printStackTrace();
-		}
-        
+		MimeMessage message = mailSender.createMimeMessage();
+  
+	    MimeMessageHelper helper = new MimeMessageHelper(message, UTF_8_ENCODING);
+	    helper.setTo(responseDTO.destinatarios().toArray(new String[0]));
+	    helper.setSubject(responseDTO.assunto());
+	    helper.setText(responseDTO.corpo(), true);
+	  
+	    mailSender.send(message);
+	}
+
+    public void enviarParaFila(EmailTemplate email) {
+        	
+    	EmailRequestDTO requestDTO = email.montarEmailTemplate();
+    	
+    	emailPublisher.publicar(requestDTO);
     }
 }

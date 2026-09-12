@@ -3,13 +3,11 @@ package com.munir.crud_pessoa.security.services;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.Random;
 import java.util.Set;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.munir.crud_pessoa.dtos.response.UsuarioResponseDTO;
@@ -31,8 +29,6 @@ public class UsuarioService implements UserDetailsService {
 	private final UsuarioMapper usuarioMapper;
 	
 	private final UsuarioRepository repository;
-	
-	private final PasswordEncoder passwordEncoder;
 
 	@Override
 	public UserDetails loadUserByUsername(String nomeUsuario) throws UsernameNotFoundException {
@@ -45,25 +41,16 @@ public class UsuarioService implements UserDetailsService {
 		throw new UsernameNotFoundException("Usuário não encontrado: " + nomeUsuario);
 	}
 	
-	public String criarUsuario(Pessoa pessoa, Boolean retornaSenha, Boolean retornaSenhaCriptografada) {
+	public void criarUsuario(Pessoa pessoa) {
 		
 		String nomeUsuario = pessoa.getEmail().split("@")[0];
-		String senha = String.valueOf(new Random().ints(1000, 10000).findFirst().getAsInt());
-		String senhaCriptografada = passwordEncoder.encode(senha);
 		
 		Set<Perfil> perfis = Set.of(new Perfil(PerfilENUM.PESSOA.getId(), PerfilENUM.PESSOA.getNome()));
-		Usuario usuario = new Usuario(null, nomeUsuario, senhaCriptografada, LocalDateTime.now(), true, perfis, pessoa);
+		
+		Usuario usuario = new Usuario(null, nomeUsuario, "", LocalDateTime.now(), true, perfis, pessoa);
 		usuario = repository.save(usuario);
 		
 		pessoa.setUsuario(usuario);
-		
-		if(retornaSenha.equals(Boolean.TRUE))
-			return senha;
-		
-		if(retornaSenhaCriptografada.equals(Boolean.TRUE))
-			return senhaCriptografada;
-		
-		return null;
 	}
 	
 	public UsuarioResponseDTO adicionarPerfis(Long idUsuario, Set<PerfilENUM> perfis) {

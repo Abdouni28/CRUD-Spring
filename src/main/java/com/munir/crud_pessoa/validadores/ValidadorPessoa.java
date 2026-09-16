@@ -8,7 +8,10 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
+import com.munir.crud_pessoa.dtos.request.ValidacaoDocumentoRequestDTO;
+import com.munir.crud_pessoa.entidades.Endereco;
 import com.munir.crud_pessoa.entidades.Pessoa;
+import com.munir.crud_pessoa.entidades.Telefone;
 import com.munir.crud_pessoa.enums.RegexENUM;
 import com.munir.crud_pessoa.enums.TipoDocumentoENUM;
 import com.munir.crud_pessoa.exceptions.PessoaValidationException;
@@ -20,16 +23,29 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class ValidadorPessoa extends Validador<Pessoa> {
+public class ValidadorPessoa implements Validador<Pessoa> {
+	
+	private final String EMPTY_SPACE = " ";
+	private final String BLANK = "";
+	private final String PARENTESIS_ESQUERDO = "(";
+	private final String PARENTESIS_DIREITO = ")";
+	private final String HIFEN = "-";
 
+	private final ValidadorCamposPreenchidosEntidades<Endereco> validadorCamposEndereco;
+
+	private final ValidadorCamposPreenchidosEntidades<Telefone> validadorCamposTelefone;
+	
+	private final ValidadorDocumento validadorDocumento;
+	
 	private final PessoaRepository repository;
+	
 	
 	@Override
 	public void validar(Pessoa pessoa) {
-
+		
 		validarNome(pessoa);
-		validarDocumento(pessoa.getCpf(), TipoDocumentoENUM.CPF);
-		validarCpfUnico(pessoa);
+		validadorDocumento.validar(new ValidacaoDocumentoRequestDTO(pessoa.getCpf(), TipoDocumentoENUM.CPF));
+		//validarCpfUnico(pessoa);
 		validarEmail(pessoa);
 		validarIdade(pessoa);
 		validarEnderecos(pessoa);
@@ -86,7 +102,7 @@ public class ValidadorPessoa extends Validador<Pessoa> {
 		if(ListUtils.isNullOrEmpty(pessoa.getEnderecos()).equals(Boolean.TRUE))
 			throw new PessoaValidationException(MessagesLoader.loadMessage("message.endereco_obrigatorio"));		
 
-		pessoa.getEnderecos().forEach(endereco -> validarTodosCamposPreenchidos(endereco));
+		pessoa.getEnderecos().forEach(endereco -> validadorCamposEndereco.validar(endereco));
 	}
 	
 	private void validarTelefones(Pessoa pessoa) {
@@ -94,7 +110,7 @@ public class ValidadorPessoa extends Validador<Pessoa> {
 		if(ListUtils.isNullOrEmpty(pessoa.getTelefones()).equals(Boolean.TRUE))
 			throw new PessoaValidationException(MessagesLoader.loadMessage("message.telefone_obrigatorio"));
 
-		pessoa.getTelefones().forEach(telefone -> validarTodosCamposPreenchidos(telefone));
+		pessoa.getTelefones().forEach(telefone -> validadorCamposTelefone.validar(telefone));
 		
 		pessoa.getTelefones().forEach(telefone -> {
 			

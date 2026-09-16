@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.munir.crud_pessoa.dtos.request.PessoaRequestDTO;
+import com.munir.crud_pessoa.dtos.request.ValidacaoPageableSortRequestDTO;
 import com.munir.crud_pessoa.dtos.request.filtros_busca.FiltrosBuscaPessoaRequestDTO;
 import com.munir.crud_pessoa.dtos.response.PessoaResponseDTO;
 import com.munir.crud_pessoa.email_templates.EmailNovaPessoaCadastradaTemplate;
@@ -23,6 +25,8 @@ import com.munir.crud_pessoa.repositories.PessoaRepository;
 import com.munir.crud_pessoa.repositories.specifications.PessoaSpecifications;
 import com.munir.crud_pessoa.security.services.UsuarioService;
 import com.munir.crud_pessoa.utils.MessagesLoader;
+import com.munir.crud_pessoa.validadores.ValidadorPageableSort;
+import com.munir.crud_pessoa.validadores.ValidadorPessoa;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,12 +37,15 @@ public class PessoaService {
 	
 	private final PessoaMapper mapper;	
 	
-	//private final ValidadorPessoa validador;
+	//private final ValidadorPessoa validadorPessoa;
+	//private final ValidadorPageableSort validadorPageable;
 	
 	private final EmailService emailService;	
 	private final UsuarioService usuarioService;
 	
 	private final PessoaRepository repository;
+	
+	Set<String> sortProperties = Set.of("id", "nome", "cpf", "email", "dataNascimento");
 	
 	public PessoaResponseDTO findById(Long idPessoa) {
 		
@@ -47,9 +54,6 @@ public class PessoaService {
 		if(pessoa.isPresent()) {
 			
 			PessoaResponseDTO pessoaDTO = mapper.toResponseDTO(pessoa.get());
-			
-			//TODO revisitar hateoas
-			//addHATEOASLinks(idPessoa, pessoaDTO);
 			
 			return pessoaDTO;
 		}
@@ -68,15 +72,12 @@ public class PessoaService {
 	  
 		} else {
 			
-			//validador.validarSortProperties(pageable, Set.of("id", "nome", "cpf", "email", "dataNascimento"));
+			//validadorPageable.validar(new ValidacaoPageableSortRequestDTO(pageable, sortProperties));
 	  
 			Specification<Pessoa> specification = PessoaSpecifications.montarSpecificationsFindAll(requestDTO);
 			
 			listaPessoas = repository.findAll(specification, pageable).getContent();
 		}
-	  
-		  //TODO revisitar hateoas
-		  //addHATEOASLinks(listaPessoasDTO.get(0).getId(), listaPessoasDTO.get(0));
 		
 		listaResponseDTO = mapper.toResponseDTOList(listaPessoas);
 		  
@@ -87,7 +88,7 @@ public class PessoaService {
 	
 		Pessoa pessoa = mapper.toEntity(requestDTO);
 		
-		//validador.validar(pessoa);
+		//validadorPessoa.validar(pessoa);
 		
 		pessoa.getEnderecos().forEach(endereco -> endereco.setPessoa(pessoa));
 		pessoa.getTelefones().forEach(telefone -> telefone.setPessoa(pessoa));
@@ -100,8 +101,6 @@ public class PessoaService {
 		
 		EmailTemplate emailTemplate = new EmailNovaPessoaCadastradaTemplate(responseDTO);
 		emailService.enviarParaFila(emailTemplate);	
-		
-		//addHATEOASLinks(pessoaDTO.getId(), pessoaDTO);
 	
 		return responseDTO;
 	}
@@ -124,8 +123,6 @@ public class PessoaService {
     	repository.save(pessoa);
     	
     	PessoaResponseDTO responseDTO = findById(requestDTO.id());
-	  
-    	//addHATEOASLinks(pessoaDTO.getId(), pessoaDTO);
   
     	return responseDTO;
     }
@@ -139,24 +136,6 @@ public class PessoaService {
 			throw new PessoaValidationException(MessageFormat.format(MessagesLoader.loadMessage("message.nenhuma_pessoa_encontrada_by_id"),
 												idPessoa));
 		
-		//addHATEOASLinks(pessoaDTO.getId(), pessoaDTO);
 		repository.deleteById(idPessoa);
 	}
-	  
-	/*
-	 * private void addHATEOASLinks(Long idPessoa, PessoaDTO pessoaDTO) {
-	 * 
-	 * pessoaDTO.add(linkTo(methodOn(PessoaController.class).findById(idPessoa)).
-	 * withRel("findById").withType("GET"));
-	 * pessoaDTO.add(linkTo(methodOn(PessoaController.class).find(pessoaDTO)).
-	 * withRel("findAll").withType("GET"));
-	 * pessoaDTO.add(linkTo(methodOn(PessoaController.class).save(pessoaDTO)).
-	 * withRel("create").withType("POST"));
-	 * pessoaDTO.add(linkTo(methodOn(PessoaController.class).alteraPessoa(idPessoa,
-	 * pessoaDTO)).withRel("update").withType("PUT"));
-	 * pessoaDTO.add(linkTo(methodOn(PessoaController.class).delete(idPessoa)).
-	 * withRel("delete").withType("DELETE"));
-	 * 
-	 * }
-	 */
 }

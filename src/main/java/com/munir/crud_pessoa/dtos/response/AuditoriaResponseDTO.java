@@ -7,40 +7,12 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@JsonPropertyOrder({"id_commit", "tipo_entidade", "id_entidade", "tipo_operacao", "data_commit", "endereco_ip", "autor", "alteracoes"})
-public class AuditoriaResponseDTO implements Serializable {
-
-	private static final long serialVersionUID = -8507954488377750927L;
-
-	@JsonProperty("id_commit")
-	private Long idCommit;
-
-	@JsonProperty("tipo_entidade")
-	private String tipoEntidade;
+@JsonPropertyOrder({"id_revisao", "data_revisao", "id_entidade", "tipo_operacao", "endereco_ip", "autor", "alteracoes"})
+public record AuditoriaResponseDTO(@JsonProperty("id_revisao") Long idRevisao,
+								   @JsonProperty("data_revisao") LocalDateTime dataRevisao,
+								   @JsonProperty("tipo_operacao") String tipoOperacao,    
+								   @JsonProperty("endereco_ip") String enderecoIp,
+								   @JsonProperty("autor") String autor,
+								   List<AlteracaoCampoRevisaoDTO> alteracoes) implements Serializable {
 	
-    @JsonProperty("id_entidade")
-    private Long idEntidade;
-    
-    @JsonProperty("tipo_operacao")
-    private String tipoOperacao;
-    
-    @JsonProperty("data_commit")
-    LocalDateTime dataCommit;
-    
-    @JsonProperty("endereco_ip")
-    private String enderecoIp;
-    
-    @JsonProperty("autor")
-    private String autor;
-    
-    List<AlteracaoCampoRevisaoDTO> alteracoes;
 }

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.javers.core.metamodel.annotation.TypeName;
+import org.hibernate.envers.Audited;
 
 import com.munir.crud_pessoa.security.entidades.Usuario;
 
@@ -28,10 +28,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@TypeName("pessoa")
-@Table(name = "pessoa")
+@Audited
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "pessoa")
 public class Pessoa implements Serializable {
 
 	private static final long serialVersionUID = -4253028561247952390L;

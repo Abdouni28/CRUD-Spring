@@ -5,8 +5,8 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;
 
-import org.javers.core.metamodel.annotation.DiffIgnore;
-import org.javers.core.metamodel.annotation.TypeName;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import com.munir.crud_pessoa.entidades.Pessoa;
 
@@ -29,10 +29,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@TypeName("usuario")
-@Table(name = "usuario")
+@Audited
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "usuario")
 public class Usuario implements Serializable {
 
 	private static final long serialVersionUID = -8029204286517782809L;
@@ -58,9 +58,9 @@ public class Usuario implements Serializable {
     @JoinTable(name = "usuario_perfil",
         	   joinColumns = @JoinColumn(name = "id_usuario"),
         	   inverseJoinColumns = @JoinColumn(name = "id_perfil"))
+	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Set<Perfil> perfis;
 	
-	@DiffIgnore
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_pessoa", referencedColumnName = "id")
 	private Pessoa pessoa;

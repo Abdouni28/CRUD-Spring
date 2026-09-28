@@ -4,6 +4,7 @@
 CREATE TABLE usuario_perfil (
     id_usuario BIGINT,
     id_perfil TINYINT,
+    PRIMARY KEY (id_usuario, id_perfil),
     CONSTRAINT fk_usuario_usuario_perfil FOREIGN KEY (id_usuario) REFERENCES usuario (id),
     CONSTRAINT fk_perfil_usuario_perfil FOREIGN KEY (id_perfil) REFERENCES perfil (id)
 );

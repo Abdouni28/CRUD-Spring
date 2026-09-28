@@ -39,7 +39,7 @@ public class UsuarioService implements UserDetailsService {
 			return usuarioMapper.usuarioToUserDetails(optionalUsuario.get());
 		
 		throw new UsernameNotFoundException("Usuário não encontrado: " + nomeUsuario);
-	}
+	}    
 	
 	public void criarUsuario(Pessoa pessoa) {
 		

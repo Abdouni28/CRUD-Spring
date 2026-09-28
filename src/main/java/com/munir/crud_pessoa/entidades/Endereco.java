@@ -3,8 +3,7 @@ package com.munir.crud_pessoa.entidades;
 import java.io.Serializable;
 import java.util.Objects;
 
-import org.javers.core.metamodel.annotation.DiffIgnore;
-import org.javers.core.metamodel.annotation.TypeName;
+import org.hibernate.envers.Audited;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,10 +22,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@TypeName("endereco")
-@Table(name = "endereco")
+@Audited
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "endereco")
 public class Endereco implements Serializable {
 
 	private static final long serialVersionUID = 3272384083407304998L;
@@ -57,7 +56,6 @@ public class Endereco implements Serializable {
 	@Column(name = "cep")
 	private String cep;
 
-	@DiffIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_pessoa")
 	private Pessoa pessoa;

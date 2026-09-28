@@ -1,145 +1,126 @@
 package com.munir.crud_pessoa.mapper.custom.impl;
 
+import java.lang.reflect.Field;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.javers.core.Javers;
-import org.javers.core.diff.Change;
-import org.javers.core.diff.Diff;
-import org.javers.core.diff.changetype.InitialValueChange;
-import org.javers.core.diff.changetype.ValueChange;
-import org.javers.core.diff.changetype.container.ContainerElementChange;
-import org.javers.core.diff.changetype.container.ListChange;
-import org.javers.core.diff.changetype.container.ValueAdded;
-import org.javers.core.diff.changetype.container.ValueRemoved;
-import org.javers.core.metamodel.object.InstanceId;
-import org.javers.shadow.Shadow;
+import org.hibernate.envers.RevisionType;
 import org.springframework.stereotype.Component;
 
 import com.munir.crud_pessoa.dtos.response.AlteracaoCampoRevisaoDTO;
 import com.munir.crud_pessoa.dtos.response.AuditoriaResponseDTO;
-import com.munir.crud_pessoa.enums.TipoCommitAuditoriaENUM;
+import com.munir.crud_pessoa.entidades.Auditoria;
+import com.munir.crud_pessoa.enums.TipoOperacaoAuditoriaENUM;
 import com.munir.crud_pessoa.mapper.custom.AuditoriaMapperCustom;
+import com.munir.crud_pessoa.utils.ReflexaoUtils;
 
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
 public class AuditoriaMapperCustomImpl implements AuditoriaMapperCustom {
 	
-	private final Javers javers;
-
 	@Override
 	@SuppressWarnings("unchecked")
 	public <responseDTO, P> responseDTO toResponseDTO(P param) {
 
-		List<Shadow<Object>> shadows = (List<Shadow<Object>>) param;
+		List<Object[]> revisoes = (List<Object[]>) param;
 		
-		if(shadows.isEmpty())
-			return null;
-		
-		if(shadows.size() == 1) {
+		if(revisoes.size() == 1) {
 			
-			AuditoriaResponseDTO responseDTO = inicializarResponseDTO(shadows.get(0));
+			RevisionType tipoOperacao = (RevisionType) revisoes.get(0)[2];
 			
-			return (responseDTO) List.of(responseDTO);
+			if(tipoOperacao == RevisionType.MOD) {
+				
+				return (responseDTO) List.of();
+				
+			} else {
+				
+				AuditoriaResponseDTO responseDTO = mapearRevisao(null, revisoes.get(0));
+				
+				return (responseDTO) List.of(responseDTO);
+			}
 		}
 
-		Shadow<Object> objetoAntigo = shadows.removeFirst();
+		AuditoriaResponseDTO primeiraAuditoriaResponseDTO = mapearRevisao(null, revisoes.get(0));
 		
-		AuditoriaResponseDTO responseDTO;
-		List<AuditoriaResponseDTO> listResponseDTO = verificarCommitInicial(objetoAntigo);
+		List<AuditoriaResponseDTO> responseDTO = new ArrayList<>();		
+		responseDTO.add(primeiraAuditoriaResponseDTO);
 		
-		for(Shadow<Object> objetoNovo : shadows) {
+		Object[] revisaoAnterior = revisoes.remove(0);
+		
+		for(Object[] revisao : revisoes) {
 			
-			responseDTO = inicializarResponseDTO(objetoNovo);
-			responseDTO.setAlteracoes(obterAlteracoesCampo(objetoAntigo, objetoNovo));
+			AuditoriaResponseDTO auditoriaResponseDTO = mapearRevisao(revisaoAnterior, revisao);
 			
-			listResponseDTO.add(responseDTO);
+			responseDTO.add(auditoriaResponseDTO);
 			
-			objetoAntigo = objetoNovo;
+			revisaoAnterior = revisao;
 		}
 		
-		limparCommitsAlteracaoSemAlteracoes(listResponseDTO);
-		
-		return (responseDTO) listResponseDTO;
+		return (responseDTO) responseDTO;
 	}
 	
-	private List<AuditoriaResponseDTO> verificarCommitInicial(Shadow<Object> shadow) {
+	private AuditoriaResponseDTO mapearRevisao(Object[] revisaoAnterior, Object[] revisaoAtual) {
 		
-		List<AuditoriaResponseDTO> listResponseDTO = new ArrayList<>();
+		Auditoria auditoria = (Auditoria) revisaoAtual[1];
+		RevisionType tipoOperacaoOriginal = (RevisionType) revisaoAtual[2];
 		
-		if(shadow.getCdoSnapshot().getType().name().equals(TipoCommitAuditoriaENUM.INSERCAO.getValorAuditoria())) 
-			listResponseDTO.add(inicializarResponseDTO(shadow));
+		Long idRevisao = Long.valueOf(auditoria.getId());
+		LocalDateTime dataRevisao = Instant.ofEpochMilli(auditoria.getTimestamp()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+		String tipoOperacao = TipoOperacaoAuditoriaENUM.fromRevisionType(tipoOperacaoOriginal).getDescricao();
+		String enderecoIp = auditoria.getEnderecoIp();
+		String autor = auditoria.getAutor();
 		
-		return listResponseDTO;
+		List<AlteracaoCampoRevisaoDTO> alteracoes = mapearAlteracoesRevisao(revisaoAnterior, revisaoAtual);
+		
+		AuditoriaResponseDTO responseDTO = new AuditoriaResponseDTO(idRevisao, dataRevisao, tipoOperacao, enderecoIp, autor, alteracoes);
+		
+		return responseDTO;
 	}
 	
-	private AuditoriaResponseDTO inicializarResponseDTO(Shadow<Object> shadow) {
-		
-		Long idRevisao = shadow.getCommitMetadata().getId().getMajorId();
-		String tipoEntidade = shadow.getCdoSnapshot().getGlobalId().getTypeName();
-		Long idEntidade = (Long)((InstanceId)shadow.getCdoSnapshot().getGlobalId()).getCdoId();
-		String tipoOperacao = TipoCommitAuditoriaENUM.resolverParaExibicao(shadow.getCdoSnapshot().getType().name());
-		LocalDateTime dataCommit = shadow.getCommitMetadata().getCommitDate();
-		String enderecoIp = shadow.getCommitMetadata().getProperties().get("endereco_ip");
-		String autor = shadow.getCommitMetadata().getAuthor();
-		
-		return new AuditoriaResponseDTO(idRevisao, tipoEntidade, idEntidade, tipoOperacao, dataCommit, enderecoIp, autor, List.of());
-	}
-	
-	private List<AlteracaoCampoRevisaoDTO> obterAlteracoesCampo(Shadow<Object> objetoAntigo, Shadow<Object> objetoNovo) {
-		
+	private List<AlteracaoCampoRevisaoDTO> mapearAlteracoesRevisao(Object[] revisaoAnterior, Object[] revisaoAtual) {
+
 		List<AlteracaoCampoRevisaoDTO> alteracoes = new ArrayList<>();
 		
-		Diff diff = javers.compare(objetoAntigo.get(), objetoNovo.get());
-		
-		String tipoEntidadePai = objetoAntigo.getCdoSnapshot().getGlobalId().getTypeName();
-		
-		for (Change change : diff.getChanges()) {
-
-			String tipoEntidade = change.getAffectedGlobalId().getTypeName();
-	    	Long idEntidade = (Long)((InstanceId)change.getAffectedGlobalId()).getCdoId();
-	    	
-		    if (change instanceof ValueChange valueChange && !(change instanceof InitialValueChange) &&
-		    	tipoEntidadePai.equals(tipoEntidade)) {
-		    	
-		    	String nomeCampo = valueChange.getPropertyName();
-		    	String valorAntigo = String.valueOf(valueChange.getLeft());
-		    	String valorNovo = String.valueOf(valueChange.getRight());
-
-		    	alteracoes.add(new AlteracaoCampoRevisaoDTO(tipoEntidade, idEntidade, nomeCampo, valorAntigo, valorNovo));
-
-		    } else if (change instanceof ListChange listChange) {
-
-		        String nomeCampo = listChange.getPropertyName();
-
-		        for (ContainerElementChange elementChange : listChange.getChanges()) {
-
-		            if (elementChange instanceof ValueAdded valueAdded) {
-		            	
-		                String valorNovo = String.valueOf(valueAdded.getAddedValue());
-		                
-		                alteracoes.add(new AlteracaoCampoRevisaoDTO(tipoEntidade, idEntidade, nomeCampo, null, valorNovo));
-
-		            } else if (elementChange instanceof ValueRemoved valueRemoved) {
-
-		                String valorAntigo = String.valueOf(valueRemoved.getRemovedValue());
-		                
-		                alteracoes.add(new AlteracaoCampoRevisaoDTO(tipoEntidade, idEntidade, nomeCampo, valorAntigo, null));
-
+		if(revisaoAnterior != null && revisaoAtual != null) {
+			
+			Object entidadeAnterior = revisaoAnterior[0];
+			Object entidadeAtual = revisaoAtual[0];
+			
+			Class<?> clazz = entidadeAtual.getClass();
+			
+			for(var field : clazz.getDeclaredFields()) {
+				
+				field.setAccessible(true);
+				
+				if(ReflexaoUtils.isNativeField(field)) {
+					
+					try {
+						
+						Object valorAntigo = field.get(entidadeAnterior);
+						Object valorNovo = field.get(entidadeAtual);
+						
+						if((valorAntigo == null && valorNovo != null) || (valorAntigo != null && !valorAntigo.equals(valorNovo))) {
+							AlteracaoCampoRevisaoDTO alteracao = new AlteracaoCampoRevisaoDTO(field.getName(), valorAntigo.toString(), valorNovo.toString());
+							alteracoes.add(alteracao);
+						}
+						
+					} catch (IllegalAccessException e) {
+						
+						e.printStackTrace();
 					}
-		        }
-		    }
+				}				
+			}
 		}
 		
 		return alteracoes;
-	}
-	
-	private void limparCommitsAlteracaoSemAlteracoes(List<AuditoriaResponseDTO> listResponseDTO) {
-		
-		listResponseDTO.removeIf(responseDTO -> responseDTO.getAlteracoes().isEmpty() && 
-				responseDTO.getTipoOperacao().equals(TipoCommitAuditoriaENUM.ALTERACAO.getValorExibicao()));
 	}
 }

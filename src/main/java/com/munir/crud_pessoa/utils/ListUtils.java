@@ -2,7 +2,9 @@ package com.munir.crud_pessoa.utils;
 
 import java.util.List;
 
-public class ListUtils {
+public final class ListUtils {
+	
+	private ListUtils() {}
 
 	public static Boolean isNullOrEmpty(List<?> lista) {
 		

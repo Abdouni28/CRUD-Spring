@@ -2,7 +2,6 @@ package com.munir.crud_pessoa.controllers;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +17,14 @@ import com.munir.crud_pessoa.entidades.Pessoa;
 import com.munir.crud_pessoa.entidades.Telefone;
 import com.munir.crud_pessoa.services.AuditoriaService;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/auditoria")
 public class AuditoriaController {
 	
-	@Autowired
-	AuditoriaService auditoriaService;
+	private final AuditoriaService auditoriaService;
 	
 	
 	@GetMapping(path = "/pessoa",

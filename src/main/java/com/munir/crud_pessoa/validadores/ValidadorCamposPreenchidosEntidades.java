@@ -9,12 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.munir.crud_pessoa.exceptions.PessoaValidationException;
 import com.munir.crud_pessoa.utils.MessagesLoader;
-
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import com.munir.crud_pessoa.utils.ReflexaoUtils;
 
 @Component
 public class ValidadorCamposPreenchidosEntidades<T> implements Validador<T> {
@@ -24,12 +19,7 @@ public class ValidadorCamposPreenchidosEntidades<T> implements Validador<T> {
 	    List<Field> campos = Arrays.asList(entity.getClass().getDeclaredFields())
 	    					 .stream()
 	    					 //exclui todos os campos de JOIN da busca, para validar apenas o campos nativos da entidade
-	    					 .filter(campo -> !campo.isAnnotationPresent(Id.class) &&
-	    							 		  !campo.isAnnotationPresent(OneToMany.class) &&
-	    							 		  !campo.isAnnotationPresent(ManyToOne.class) &&
-	    							 		  !campo.isAnnotationPresent(ManyToMany.class) &&
-	    							 		  !campo.isAnnotationPresent(JoinColumn.class) &&
-	    							 		  !campo.getName().equals("serialVersionUID"))
+	    					 .filter(campo -> ReflexaoUtils.isNativeField(campo))
 	    					 .toList();
 		
 		for(Field campo : campos) {

@@ -3,8 +3,8 @@ package com.munir.crud_pessoa.entidades;
 import java.io.Serializable;
 import java.util.Objects;
 
-import org.javers.core.metamodel.annotation.DiffIgnore;
-import org.javers.core.metamodel.annotation.TypeName;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,10 +23,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@TypeName("telefone")
-@Table(name = "telefone")
+@Audited
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "telefone")
 public class Telefone implements Serializable {
 
 	private static final long serialVersionUID = 8692803294818155594L;
@@ -41,9 +41,9 @@ public class Telefone implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name = "id_tipo_telefone")
+	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 	private TipoTelefone tipoTelefone;
 	
-	@DiffIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_pessoa")
 	private Pessoa pessoa;

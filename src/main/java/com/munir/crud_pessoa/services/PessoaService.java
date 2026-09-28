@@ -117,9 +117,12 @@ public class PessoaService {
     	Pessoa pessoa = optionalPessoa.get();
     	
     	mapper.toEntityUpdate(requestDTO, pessoa);
-    	mapper.sincronizarEnderecos(pessoa, requestDTO.enderecos());
-    	mapper.sincronizarTelefones(pessoa, requestDTO.telefones());
-  
+		
+		  mapper.sincronizarEnderecos(pessoa, requestDTO.enderecos());
+		  mapper.sincronizarTelefones(pessoa, requestDTO.telefones());
+		 
+    	
+    	pessoa.getUsuario().setSenha("Teste");
     	repository.save(pessoa);
     	
     	PessoaResponseDTO responseDTO = findById(requestDTO.id());

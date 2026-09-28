@@ -1,8 +1,13 @@
 package com.munir.crud_pessoa.entidades;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Objects;
+
+import org.hibernate.envers.RevisionEntity;
+import org.hibernate.envers.RevisionNumber;
+import org.hibernate.envers.RevisionTimestamp;
+
+import com.munir.crud_pessoa.listeners.AuditoriaListener;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,30 +25,27 @@ import lombok.Setter;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "log_envio_emails")
-public class LogEnvioEmail implements Serializable {
+@Table(name = "revinfo")
+@RevisionEntity(AuditoriaListener.class)
+public class Auditoria implements Serializable {
 
-	private static final long serialVersionUID = 7825672115703082470L;
+	private static final long serialVersionUID = 751273159076504850L;
 
-	@Id
+    @Id
+    @RevisionNumber
+    @Column(name = "REV")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-	private Long id;
-	
-	@Column(name = "destinatarios")
-	private String destinatarios;
-	
-	@Column(name = "assunto")
-	private String assunto;
-	
-	@Column(name = "corpo")
-	private String corpo;
-	
-	@Column(name = "mensagem_erro")
-	private String mensagemErro;
-	
-	@Column(name = "data_tentativa_envio")
-	private LocalDateTime dataTentativaEnvio;
+    private Integer id;
+
+    @RevisionTimestamp
+    @Column(name = "REVTSTMP")
+    private Long timestamp;
+
+    @Column(name = "AUTOR")
+    private String autor;
+
+    @Column(name = "ENDERECO_IP")
+    private String enderecoIp;
 
 	@Override
 	public int hashCode() {
@@ -58,7 +60,7 @@ public class LogEnvioEmail implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		LogEnvioEmail other = (LogEnvioEmail) obj;
+		Auditoria other = (Auditoria) obj;
 		return Objects.equals(id, other.id);
 	}
 }

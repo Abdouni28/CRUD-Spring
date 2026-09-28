@@ -2,32 +2,41 @@ package com.munir.crud_pessoa.repositories.custom.impl;
 
 import java.util.List;
 
-import org.javers.core.Javers;
-import org.javers.repository.jql.JqlQuery;
-import org.javers.repository.jql.QueryBuilder;
-import org.javers.shadow.Shadow;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.AuditReaderFactory;
+import org.hibernate.envers.query.AuditEntity;
+import org.hibernate.envers.query.AuditQuery;
 import org.springframework.stereotype.Repository;
 
 import com.munir.crud_pessoa.dtos.request.AuditoriaRequestDTO;
 import com.munir.crud_pessoa.repositories.custom.AuditoriaRepositoryCustom;
 
-import lombok.RequiredArgsConstructor;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 @Repository
-@RequiredArgsConstructor
 public class AuditoriaRepositoryCustomImpl implements AuditoriaRepositoryCustom {
 	
-	private final Javers javers;
+	@PersistenceContext
+	private EntityManager entityManager;
 	
 	@Override
-	public List<Shadow<Object>> buscarRevisoes(AuditoriaRequestDTO requestDTO, Class<?> clazz) {
-		
-		JqlQuery query = QueryBuilder.byInstanceId(requestDTO.idEntidade(), clazz)
-	            					 .from(requestDTO.dataInicio())	
-									 .to(requestDTO.dataFim())
-	            					 .withScopeCommitDeep()
-            					 	 .build();
-		
-		return javers.findShadows(query).reversed();
+	@SuppressWarnings("unchecked")
+	public <T> List<Object[]> buscarRevisoes(AuditoriaRequestDTO requestDTO, Class<T> clazz) {	    
+
+        AuditReader auditReader = AuditReaderFactory.get(entityManager);
+
+        AuditQuery query = auditReader.createQuery().forRevisionsOfEntity(clazz, false, true);
+        query.add(AuditEntity.id().eq(requestDTO.idEntidade()));
+
+        if (requestDTO.dataInicio() != null)
+            query.add(AuditEntity.revisionProperty("timestamp").ge(requestDTO.dataInicio()));
+        
+        if (requestDTO.dataFim() != null)
+            query.add(AuditEntity.revisionProperty("timestamp").le(requestDTO.dataFim()));
+
+        List<Object[]> revisoes = query.getResultList();
+        
+        return revisoes;
 	}
 }

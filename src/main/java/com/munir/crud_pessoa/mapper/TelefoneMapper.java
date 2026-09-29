@@ -14,6 +14,14 @@ import com.munir.crud_pessoa.entidades.Telefone;
 public interface TelefoneMapper extends BaseMapper<Telefone, TelefoneRequestDTO, TelefoneResponseDTO> {
 	
 	@Override
-    @Mapping(target = "pessoa", ignore = true)
-	void toEntityUpdate(TelefoneRequestDTO dto, @MappingTarget Telefone entity);
+	@Mapping(source = "pessoa.id", target = "idPessoa")
+	TelefoneResponseDTO toResponseDTO(Telefone telefone);
+	
+	@Override
+	@Mapping(source = "idPessoa", target = "pessoa.id")
+	Telefone toEntity(TelefoneRequestDTO requestDTO);
+	
+	@Override
+	@Mapping(source = "idPessoa", target = "pessoa.id")
+	void toEntityUpdate(TelefoneRequestDTO requestDTO, @MappingTarget Telefone telefone);
 }

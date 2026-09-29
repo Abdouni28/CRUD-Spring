@@ -13,6 +13,14 @@ import com.munir.crud_pessoa.entidades.Endereco;
 public interface EnderecoMapper extends BaseMapper<Endereco, EnderecoRequestDTO, EnderecoResponseDTO> {
 	
 	@Override
-    @Mapping(target = "pessoa", ignore = true)
-	void toEntityUpdate(EnderecoRequestDTO dto, @MappingTarget Endereco entity);
+	@Mapping(source = "pessoa.id", target = "idPessoa")
+	EnderecoResponseDTO toResponseDTO(Endereco endereco);
+	
+	@Override
+	@Mapping(source = "idPessoa", target = "pessoa.id")
+	Endereco toEntity(EnderecoRequestDTO dto);
+	
+	@Override
+	@Mapping(source = "idPessoa", target = "pessoa.id")
+	void toEntityUpdate(EnderecoRequestDTO dto, @MappingTarget Endereco endereco);
 }

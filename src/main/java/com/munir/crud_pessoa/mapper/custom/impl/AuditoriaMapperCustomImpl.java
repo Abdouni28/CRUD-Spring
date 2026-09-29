@@ -1,6 +1,5 @@
 package com.munir.crud_pessoa.mapper.custom.impl;
 
-import java.lang.reflect.Field;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -17,10 +16,6 @@ import com.munir.crud_pessoa.enums.TipoOperacaoAuditoriaENUM;
 import com.munir.crud_pessoa.mapper.custom.AuditoriaMapperCustom;
 import com.munir.crud_pessoa.utils.ReflexaoUtils;
 
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import lombok.RequiredArgsConstructor;
 
 @Component

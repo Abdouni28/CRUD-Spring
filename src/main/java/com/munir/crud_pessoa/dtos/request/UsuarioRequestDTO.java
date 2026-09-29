@@ -8,5 +8,5 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record UsuarioRequestDTO(Long id, @JsonProperty("nome") String nomeUsuario, String senha,
 								@JsonProperty("data_criacao") LocalDateTime dataCriacao, Boolean ativo,
-								Set<PerfilRequestDTO> perfis) implements Serializable {
+								Set<PerfilRequestDTO> perfis, @JsonProperty("id_pessoa") Long idPessoa) implements Serializable {
 }

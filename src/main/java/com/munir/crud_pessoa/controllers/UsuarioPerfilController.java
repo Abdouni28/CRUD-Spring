@@ -13,33 +13,33 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.munir.crud_pessoa.dtos.response.UsuarioResponseDTO;
 import com.munir.crud_pessoa.security.entidades.Perfil.PerfilENUM;
-import com.munir.crud_pessoa.security.services.UsuarioService;
+import com.munir.crud_pessoa.security.services.UserProfileService;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/usuario")
-public class UsuarioController {
+@RequestMapping("/user-profile")
+public class UsuarioPerfilController {
 	
-	private final UsuarioService usuarioService;	
+	private final UserProfileService userProfileService;	
 	
-	@PutMapping(path = "/add-perfis/{id}",
+	@PutMapping(path = "/add-profiles/{id}",
 				produces = MediaType.APPLICATION_JSON_VALUE,
 				consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<UsuarioResponseDTO> adicionarPerfis(@PathVariable("id") Long idUsuario, @RequestBody Set<PerfilENUM> perfis) {
+	public ResponseEntity<UsuarioResponseDTO> addProfiles(@PathVariable("id") Long idUser, @RequestBody Set<PerfilENUM> profiles) {
 
-		UsuarioResponseDTO responseDTO = usuarioService.adicionarPerfis(idUsuario, perfis);
+		UsuarioResponseDTO responseDTO = userProfileService.addProfiles(idUser, profiles);
 
 		return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
 	}
 	
-	@PutMapping(path = "/remove-perfis/{id}",
+	@PutMapping(path = "/remove-profiles/{id}",
 			produces = MediaType.APPLICATION_JSON_VALUE,
 			consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<UsuarioResponseDTO> removerPerfis(@PathVariable("id") Long idUsuario, @RequestBody Set<PerfilENUM> perfis) {
+	public ResponseEntity<UsuarioResponseDTO> removeProfiles(@PathVariable("id") Long idUser, @RequestBody Set<PerfilENUM> profiles) {
 	
-		UsuarioResponseDTO responseDTO = usuarioService.removerPerfis(idUsuario, perfis);
+		UsuarioResponseDTO responseDTO = userProfileService.removeProfiles(idUser, profiles);
 	
 		return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
 	}

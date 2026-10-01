@@ -54,6 +54,15 @@ public class ExceptionHandlerController {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
     }
 	
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ExceptionResponseDTO> handleIllegalArgumentException(IllegalArgumentException exception) {
+		
+		setResponseDTO(exception);
+		
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
+    }
+	
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<ExceptionResponseDTO> handleNullPointerExceptionException(NullPointerException exception) {

@@ -28,8 +28,8 @@ public class Perfil implements Serializable {
 	public static final String ROLE_PESSOA = "ROLE_PESSOA";
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	@Column(name = "nome")

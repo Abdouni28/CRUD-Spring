@@ -6,12 +6,12 @@ import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
-import com.munir.crud_pessoa.dtos.response.UsuarioResponseDTO;
-import com.munir.crud_pessoa.exceptions.UsuarioValidationException;
-import com.munir.crud_pessoa.mapper.UsuarioMapper;
-import com.munir.crud_pessoa.security.entidades.Perfil;
-import com.munir.crud_pessoa.security.entidades.Usuario;
-import com.munir.crud_pessoa.security.entidades.Perfil.PerfilENUM;
+import com.munir.crud_pessoa.dtos.response.UserResponseDTO;
+import com.munir.crud_pessoa.exceptions.UserValidationException;
+import com.munir.crud_pessoa.mapper.UserMapper;
+import com.munir.crud_pessoa.security.entidades.Profile;
+import com.munir.crud_pessoa.security.entidades.Profile.ProfileENUM;
+import com.munir.crud_pessoa.security.entidades.User;
 import com.munir.crud_pessoa.security.repositories.UsuarioRepository;
 import com.munir.crud_pessoa.utils.MessagesLoader;
 
@@ -21,74 +21,74 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserProfileService {	
 
-	private final UsuarioMapper usuarioMapper;
+	private final UserMapper mapper;
 	
 	private final UsuarioRepository repository;
 
-	public UsuarioResponseDTO addProfiles(Long idUser, Set<PerfilENUM> profiles) {
+	public UserResponseDTO addProfiles(Long id, Set<ProfileENUM> profiles) {
 		
-		Optional<Usuario> optionalUser = repository.findById(idUser);
+		Optional<User> optionalUser = repository.findById(id);
 		
 		if(optionalUser.isPresent()) {
 			
-			Usuario user = optionalUser.get();
+			User user = optionalUser.get();
 			
 			profiles.forEach(profile -> {
 				
 				if(userHasProfile(user, profile).equals(Boolean.FALSE)) {
 					
-					user.getPerfis().add(new Perfil(profile.getId(), profile.getNome()));
+					user.getProfiles().add(new Profile(profile.getId(), profile.getName()));
 					
 				} else {
 					
-					throw new UsuarioValidationException(MessageFormat.format(MessagesLoader.loadMessage("message.usuario_ja_possui_perfil"),
-													 	 user.getNomeUsuario(), profile.getNome()));
+					throw new UserValidationException(MessageFormat.format(MessagesLoader.loadMessage("message.usuario_ja_possui_perfil"),
+													 	 user.getUsername(), profile.getName()));
 				}
 			});
 			
-			Usuario savedUser = repository.save(user);
+			User savedUser = repository.save(user);
 			
-			UsuarioResponseDTO responseDTO = usuarioMapper.toResponseDTO(savedUser);
+			UserResponseDTO response = mapper.toResponseDTO(savedUser);
 			
-			return responseDTO;
+			return response;
 		}
 		
 		return null;
 	}
 	
-	public UsuarioResponseDTO removeProfiles(Long idUser, Set<PerfilENUM> profiles) {
+	public UserResponseDTO removeProfiles(Long id, Set<ProfileENUM> profiles) {
 		
-		Optional<Usuario> optionalUser = repository.findById(idUser);
+		Optional<User> optionalUser = repository.findById(id);
 		
 		if(optionalUser.isPresent()) {
 			
-			Usuario user = optionalUser.get();
+			User user = optionalUser.get();
 			
 			profiles.forEach(profile -> {
 				
 				if(userHasProfile(user, profile).equals(Boolean.TRUE)) {
 					
-					user.getPerfis().removeIf(perfilRemover -> perfilRemover.getId().equals(profile.getId()));
+					user.getProfiles().removeIf(profileToRemove -> profileToRemove.getId().equals(profile.getId()));
 					
 				} else {
 					
-					throw new UsuarioValidationException(MessageFormat.format(MessagesLoader.loadMessage("message.usuario_nao_possui_perfil"),
-														 user.getNomeUsuario(), profile.getNome()));
+					throw new UserValidationException(MessageFormat.format(MessagesLoader.loadMessage("message.usuario_nao_possui_perfil"),
+														 user.getUsername(), profile.getName()));
 				}
 			});
 			
-			Usuario savedUser = repository.save(user);
+			User savedUser = repository.save(user);
 
-			UsuarioResponseDTO responseDTO = usuarioMapper.toResponseDTO(savedUser);
+			UserResponseDTO response = mapper.toResponseDTO(savedUser);
 			
-			return responseDTO;
+			return response;
 		}
 		
 		return null;
 	}
 	
-	private Boolean userHasProfile(Usuario user, PerfilENUM profile) {
+	private Boolean userHasProfile(User user, ProfileENUM profile) {
 		
-		return user.getPerfis().stream().anyMatch(perfil -> perfil.getId().equals(profile.getId()));
+		return user.getProfiles().stream().anyMatch(perfil -> perfil.getId().equals(profile.getId()));
 	}
 }

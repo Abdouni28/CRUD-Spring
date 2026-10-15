@@ -23,9 +23,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
-    private final String PATH_AUTH = "/auth";
-    private final String AUTHORIZATION = "Authorization";
-    private final String BEARER = "Bearer ";
+    private static final String AUTH_PATH = "/auth";
+    private static final String AUTHORIZATION = "Authorization";
+    private static final String BEARER = "Bearer ";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -33,7 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String path = request.getServletPath();        
         final String authHeader = request.getHeader(AUTHORIZATION);
         
-        if (authHeader == null || !authHeader.startsWith(BEARER) || path.startsWith(PATH_AUTH)) {
+        if (authHeader == null || !authHeader.startsWith(BEARER) || path.startsWith(AUTH_PATH)) {
         	
         	filterChain.doFilter(request, response);
         	return;

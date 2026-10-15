@@ -5,14 +5,14 @@ import lombok.Getter;
 @Getter
 public enum RegexENUM {
 	
-	APENAS_CARACTERES("^[\\p{L} ]+$"),
-	APENAS_NUMEROS("^\\d+$"),
-	FORMATO_EMAIL("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
+	CHARS_ONLY("^[\\p{L} ]+$"),
+	NUMBERS_ONLY("^\\d+$"),
+	EMAIL_PATTERN("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
 
-	private String valor;
+	private String value;
 
-	RegexENUM(String valor) {
+	RegexENUM(String value) {
 
-		this.valor = valor;
+		this.value = value;
 	}
 }

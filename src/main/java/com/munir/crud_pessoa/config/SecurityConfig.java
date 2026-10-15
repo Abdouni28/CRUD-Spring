@@ -34,37 +34,14 @@ import jakarta.servlet.http.HttpServletResponse;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
+	
+	private static final String AUTH_PATH = "/auth/**";
 
     @Bean
     JwtAuthenticationFilter jwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService) {
 
         return new JwtAuthenticationFilter(jwtService, userDetailsService);
     }
-    
-    @Bean
-    AuthenticationEntryPoint authenticationEntryPoint(ObjectMapper mapper) {
-    	
-    	return new AuthenticationEntryPoint() {
-
-			@Override
-			public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
-								throws IOException, ServletException {
-
-				response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-		        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-		        
-		        LocalDateTime timestamp = LocalDateTime.now();
-				String mensagem = MessagesLoader.loadMessage("message.token_autenticacao_invalido");
-				String nomeException = authException.getClass().getSimpleName();
-				
-		        ExceptionResponseDTO responseDTO = new ExceptionResponseDTO(timestamp, mensagem, nomeException);
-
-		        response.getWriter().write(mapper.writeValueAsString(responseDTO));
-			}
-    		
-    	};
-		
-	}
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter, AuthenticationEntryPoint authenticationEntryPoint) throws Exception {
@@ -73,7 +50,7 @@ public class SecurityConfig {
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**").permitAll()
+                .requestMatchers(AUTH_PATH).permitAll()
                 .anyRequest().authenticated())
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
             .exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(authenticationEntryPoint));

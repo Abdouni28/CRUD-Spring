@@ -6,28 +6,28 @@ import com.munir.crud_pessoa.dtos.request.EmailRequestDTO;
 
 public abstract class EmailTemplate {
 	
-	public EmailRequestDTO montarEmailTemplate() {
+	public EmailRequestDTO buildEmailTemplate() {
 		
-		List<String> destinatarios = getDestinatarios();
-		String assunto = getAssunto();
-		String corpo = getCorpo();
+		List<String> addressees = getAddressees();
+		String subject = getSubject();
+		String content = getContent();
 		
-		EmailRequestDTO emailRequestDTO = new EmailRequestDTO(destinatarios, assunto, corpo);
+		EmailRequestDTO emailRequestDTO = new EmailRequestDTO(addressees, subject, content);
 		
 		return emailRequestDTO;
 	}
 
-	protected abstract List<String> getDestinatarios();
+	protected abstract List<String> getAddressees();
 	
-	protected abstract String getAssunto();
+	protected abstract String getSubject();
 	
-	protected abstract String getCorpo();
+	protected abstract String getContent();
 	
-	protected String preencherParametrosAssunto(String assunto) {
-		return assunto;
+	protected String fillSubjectParameters(String subject) {
+		return subject;
 	}
 	
-	protected String preencherParametrosCorpo(String corpo) {
-		return corpo;
+	protected String fillContentParameters(String content) {
+		return content;
 	}
 }

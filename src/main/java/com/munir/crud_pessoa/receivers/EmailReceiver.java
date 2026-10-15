@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.munir.crud_pessoa.dtos.response.EmailResponseDTO;
-import com.munir.crud_pessoa.entidades.LogEnvioEmail;
+import com.munir.crud_pessoa.entidades.EmailDeliverLog;
+import com.munir.crud_pessoa.services.EmailDeliverLogService;
 import com.munir.crud_pessoa.services.EmailService;
-import com.munir.crud_pessoa.services.LogEnvioEmailService;
 
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class EmailReceiver implements Receiver<EmailResponseDTO> {
 	
 	private final EmailService emailService;
 	
-	private final LogEnvioEmailService logEnvioEmailService;
+	private final EmailDeliverLogService logEnvioEmailService;
 	
 	private final ObjectMapper objectMapper;
 
@@ -31,17 +31,16 @@ public class EmailReceiver implements Receiver<EmailResponseDTO> {
 		
 		try {
 			
-			emailService.enviarEmail(email);
+			emailService.send(email);
 			
 		} catch (MessagingException e) {
 			
 			try {
 				
-				LogEnvioEmail logEnvioEmail = new LogEnvioEmail(null, objectMapper.writeValueAsString(email.destinatarios()),
-																email.assunto(), email.corpo(),
-																e.getMessage(), LocalDateTime.now());
+				EmailDeliverLog log = new EmailDeliverLog(null, objectMapper.writeValueAsString(email.addressees()),
+														  email.subject(), email.content(), e.getMessage(), LocalDateTime.now());
 				
-				logEnvioEmailService.save(logEnvioEmail);
+				logEnvioEmailService.save(log);
 				
 			} catch (JsonProcessingException e1) {
 

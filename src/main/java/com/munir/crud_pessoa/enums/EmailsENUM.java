@@ -7,19 +7,19 @@ import lombok.Getter;
 @Getter
 public enum EmailsENUM {
 	
-	NOVA_PESSOA_CADASTRADA("Bem vindo ao nosso sistema!", "emails/email_nova_pessoa_cadastrada.html");
+	NEW_PERSON("Bem vindo ao nosso sistema!", "emails/new_person.html");
 
-	private final String assunto;
+	private final String subject;
 	
-	private final String arquivoEmail;
+	private final String file;
 
-	EmailsENUM(String assunto, String arquivoEmail) {
+	EmailsENUM(String subject, String file) {
 
-		this.assunto = assunto;
-		this.arquivoEmail = arquivoEmail;
+		this.subject = subject;
+		this.file = file;
 	}
 
-	public String getCorpoEmail() {
-	    return ResourcesLoader.loadResourceAsString(arquivoEmail);
+	public String getContent() {
+	    return ResourcesLoader.loadResourceAsString(file);
 	}
 }

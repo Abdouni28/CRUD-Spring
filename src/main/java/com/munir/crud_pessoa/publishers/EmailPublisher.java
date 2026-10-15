@@ -21,9 +21,8 @@ public class EmailPublisher implements Publisher<EmailRequestDTO> {
 	private final RabbitTemplate rabbitTemplate;
 
     @Override
-    public void publicar(EmailRequestDTO email) {
+    public void publish(EmailRequestDTO request) {
     	
-        rabbitTemplate.convertAndSend(exchangeName, routingKey, email);
+        rabbitTemplate.convertAndSend(exchangeName, routingKey, request);
     }
-
 }

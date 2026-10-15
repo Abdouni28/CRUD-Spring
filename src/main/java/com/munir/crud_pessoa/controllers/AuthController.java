@@ -22,17 +22,17 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
-	
-	private final AuthenticationManager authenticationManager;
+
     private final JwtService jwtService;
 	
+	private final AuthenticationManager authenticationManager;	
 	
 	@PostMapping(path = "/login",
 				 produces = MediaType.APPLICATION_JSON_VALUE,
 				 consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<TokenResponseDTO> login(@RequestBody AuthRequestDTO request) {
 
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.usuario(), request.senha()));
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.username(), request.password()));
 
         UserDetails user = (UserDetails) authentication.getPrincipal();
         TokenResponseDTO token = jwtService.generateToken(user);

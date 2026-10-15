@@ -21,25 +21,24 @@ public class EmailService {
 
 	private final JavaMailSender mailSender;
   
-	private static final String UTF_8_ENCODING = "UTF-8";
-	 
+	private static final String UTF_8_ENCODING = "UTF-8";	 
 	
-	public void enviarEmail(EmailResponseDTO responseDTO) throws MessagingException {
+	public void send(EmailResponseDTO response) throws MessagingException {
 			
 		MimeMessage message = mailSender.createMimeMessage();
   
 	    MimeMessageHelper helper = new MimeMessageHelper(message, UTF_8_ENCODING);
-	    helper.setTo(responseDTO.destinatarios().toArray(new String[0]));
-	    helper.setSubject(responseDTO.assunto());
-	    helper.setText(responseDTO.corpo(), true);
+	    helper.setTo(response.addressees().toArray(new String[0]));
+	    helper.setSubject(response.subject());
+	    helper.setText(response.content(), true);
 	  
 	    mailSender.send(message);
 	}
 
-    public void enviarParaFila(EmailTemplate email) {
+    public void sendToQueue(EmailTemplate email) {
         	
-    	EmailRequestDTO requestDTO = email.montarEmailTemplate();
+    	EmailRequestDTO request = email.buildEmailTemplate();
     	
-    	emailPublisher.publicar(requestDTO);
+    	emailPublisher.publish(request);
     }
 }

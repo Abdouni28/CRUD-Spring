@@ -11,17 +11,14 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 
 @Configuration
 public class CacheConfig {
+	
+	private static final String AUDIT = "audit";
 
 	@Bean
     CacheManager cacheManager() {
 
-        CaffeineCacheManager cacheManager = new CaffeineCacheManager("auditoria");
-
-        cacheManager.setCaffeine(
-            Caffeine.newBuilder()
-                .expireAfterWrite(10, TimeUnit.MINUTES)
-                .maximumSize(1000)
-        );
+        CaffeineCacheManager cacheManager = new CaffeineCacheManager(AUDIT);
+        cacheManager.setCaffeine(Caffeine.newBuilder().expireAfterWrite(10, TimeUnit.MINUTES).maximumSize(1000));
 
         return cacheManager;
     }

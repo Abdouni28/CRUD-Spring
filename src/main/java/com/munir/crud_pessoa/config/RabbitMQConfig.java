@@ -27,12 +27,10 @@ public class RabbitMQConfig {
         return new DirectExchange(exchangeName);
     }
 
-
     @Bean
     Queue queue() {
         return QueueBuilder.durable(queue).build();
     }
-
 
     @Bean
     Binding binding(Queue queue, DirectExchange exchange) {

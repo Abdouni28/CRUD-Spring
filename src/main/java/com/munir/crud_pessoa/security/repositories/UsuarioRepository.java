@@ -4,9 +4,9 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.munir.crud_pessoa.security.entidades.Usuario;
+import com.munir.crud_pessoa.security.entidades.User;
 
-public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
+public interface UsuarioRepository extends JpaRepository<User, Long> {
 	
-	Optional<Usuario> findByNomeUsuarioAndAtivoTrue(String nomeUsuario);
+	Optional<User> findByUsernameAndActiveTrue(String username);
 }

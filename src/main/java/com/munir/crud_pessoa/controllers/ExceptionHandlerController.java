@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.munir.crud_pessoa.dtos.response.ExceptionResponseDTO;
-import com.munir.crud_pessoa.exceptions.PessoaValidationException;
-import com.munir.crud_pessoa.exceptions.UsuarioValidationException;
+import com.munir.crud_pessoa.exceptions.PersonValidationException;
+import com.munir.crud_pessoa.exceptions.UserValidationException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,30 +19,30 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ExceptionHandlerController {
 	
-	private ExceptionResponseDTO responseDTO;
+	private ExceptionResponseDTO response;
 	
 	private LocalDateTime timestamp;
 	
-	private String mensagem;
+	private String message;
 	
-	private String nomeException;
+	private String exceptionName;
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(PessoaValidationException.class)
-    public ResponseEntity<ExceptionResponseDTO> handlePessoaValidationException(PessoaValidationException exception) {
+    @ExceptionHandler(PersonValidationException.class)
+    public ResponseEntity<ExceptionResponseDTO> handlePessoaValidationException(PersonValidationException exception) {
 		
 		setResponseDTO(exception);
 		
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(UsuarioValidationException.class)
-    public ResponseEntity<ExceptionResponseDTO> handleUsuarioValidationException(UsuarioValidationException exception) {
+    @ExceptionHandler(UserValidationException.class)
+    public ResponseEntity<ExceptionResponseDTO> handleUsuarioValidationException(UserValidationException exception) {
 		
 		setResponseDTO(exception);
 		
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 	
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -51,7 +51,7 @@ public class ExceptionHandlerController {
 		
 		setResponseDTO(exception);
 		
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 	
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -60,7 +60,7 @@ public class ExceptionHandlerController {
 		
 		setResponseDTO(exception);
 		
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 	
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -69,15 +69,15 @@ public class ExceptionHandlerController {
 		
 		setResponseDTO(exception);
 		
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDTO);
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 	
 	private void setResponseDTO(Exception exception) {
 		
 		this.timestamp = LocalDateTime.now();
-		this.mensagem = exception.getMessage();
-		this.nomeException = exception.getClass().getSimpleName();
+		this.message = exception.getMessage();
+		this.exceptionName = exception.getClass().getSimpleName();
 		 
-		this.responseDTO = new ExceptionResponseDTO(timestamp, mensagem, nomeException);
+		this.response = new ExceptionResponseDTO(timestamp, message, exceptionName);
 	}
 }

@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public enum SimNaoEnum {
 	
-	SIM("Sim", "S"),
-	NAO("Não", "N");
+	YES("Yes", "Y"),
+	NO("No", "N");
 	
-	private String valor;
+	private String value;
 	
-	private String flag;
+	private String abbreviation;
 }

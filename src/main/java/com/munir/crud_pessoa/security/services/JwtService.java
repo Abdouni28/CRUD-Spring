@@ -19,7 +19,7 @@ public class JwtService {
 	@Value("${jwt.secret}")
     private String secret;
 	
-	private final String PERFIS = "perfis";
+	private final static String PROFILES = "profiles";
 
     private Key getSignKey() {
     	
@@ -33,7 +33,7 @@ public class JwtService {
 
         String token = Jwts.builder()
                 .setSubject(user.getUsername())
-                .claim(PERFIS, user.getAuthorities())
+                .claim(PROFILES, user.getAuthorities())
                 .setIssuedAt(issuedAt)
                 .setExpiration(expiration)
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
